@@ -87,7 +87,7 @@
 		<!--		<pluginId>${project.groupId}.${project.artifactId}</pluginId>-->
 		<java.version>19</java.version>
 		<slf4j.version>2.0.7</slf4j.version>
-		<owlapi4.version>4.5.25-komet</owlapi4.version>
+		<owlapi4.version>4.5.25-komet-module</owlapi4.version>
 	</properties>
 
 	<dependencies>
@@ -120,8 +120,8 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>dev.ikm.jpms</groupId>
-			<artifactId>owlapi-api-module</artifactId>
+			<groupId>net.sourceforge.owlapi</groupId>
+			<artifactId>owlapi-api</artifactId>
 			<version>${owlapi4.version}</version>
 		</dependency>
 	</dependencies>
