@@ -25,9 +25,6 @@ open module org.liveontologies.puli {
 
 	requires org.slf4j;
 
-	requires org.semanticweb.owlapi;
-
-	exports org.liveontologies.owlapi.proof;
 	exports org.liveontologies.puli;
 	exports org.liveontologies.puli.collections;
 	exports org.liveontologies.puli.pinpointing;

@@ -1,6 +1,6 @@
 Proof Utility Library
 
-Proof Utility Library is Copyright (c) 2014 - ${currentYear} 
+Proof Utility Library is Copyright (c) 2014 - 2017 
 Live Ontologies Project
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,4 +21,4 @@ A library for manipulating with proofs based on inference rules.
 
 For further information see: 
 
-${project.scm.url} 
+https://github.com/liveontologies/puli 
