@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>puli</artifactId>
 	<groupId>org.liveontologies</groupId>
-	<version>0.2.0-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<packaging>bundle</packaging>
 
 	<prerequisites>
@@ -36,7 +35,7 @@
 
 	<organization>
 		<name>Live Ontologies Project</name>
-		<url>https://github.com/orgs/liveontologies/</url>
+		<url>http://liveontologies.org</url>
 	</organization>
 
 	<inceptionYear>2014</inceptionYear>
@@ -86,23 +85,23 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>18.0</version><!-- hold back because of Protege -->
+			<version>18.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.36</version>
+			<version>1.7.12</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
-			<version>1.7.36</version>
+			<version>1.7.12</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.13.2</version>
+			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -117,10 +116,34 @@
 	<build>
 		<pluginManagement>
 			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>3.0.0-M5</version>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>build-helper-maven-plugin</artifactId>
+										<versionRange>[1.0,)</versionRange>
+										<goals>
+											<goal>timestamp-property</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute>
+											<runOnConfiguration>true</runOnConfiguration>
+											<runOnIncremental>true</runOnIncremental>
+										</execute>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -128,26 +151,26 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
+				<version>3.7.0</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>1.6</source>
+					<target>1.6</target>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>animal-sniffer-maven-plugin</artifactId>
-				<version>1.20</version>
+				<version>1.16</version>
 				<configuration>
 					<signature>
 						<groupId>org.codehaus.mojo.signature</groupId>
-						<artifactId>java18</artifactId>
+						<artifactId>java16</artifactId>
 						<version>1.0</version>
 					</signature>
 				</configuration>
 				<executions>
 					<execution>
-						<id>ensure-java-1.8-class-library</id>
+						<id>ensure-java-1.6-class-library</id>
 						<phase>test</phase>
 						<goals>
 							<goal>check</goal>
@@ -158,30 +181,29 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>5.1.4</version>
+				<version>3.3.0</version>
 				<extensions>true</extensions>
-				<executions>
-					<execution>
-						<id>bundle-manifest</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>manifest</goal>
-						</goals>
-						<configuration>
-							<manifestLocation>META-INF</manifestLocation>
-							<instructions>
-								<Bundle-SymbolicName>${pluginId};singleton:=true</Bundle-SymbolicName>
-								<Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-							</instructions>					
-						</configuration>
-					</execution>
-				</executions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${pluginId};singleton:=true</Bundle-SymbolicName>
+						<Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+					</instructions>
+					<executions>
+						<execution>
+							<id>bundle-manifest</id>
+							<phase>install</phase>
+							<goals>
+								<goal>manifest</goal>
+							</goals>
+						</execution>
+					</executions>
+				</configuration>
 			</plugin>
 			<plugin>
 				<!-- the plugin used to generate license headers -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>license-maven-plugin</artifactId>
-				<version>1.20</version>
+				<version>1.14</version>
 				<configuration>
 					<verbose>false</verbose>
 					<addSvnKeyWords>true</addSvnKeyWords>
@@ -211,7 +233,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>3.3.0</version>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<!-- retrive the current year from the build timestamp, used in README.txt -->
@@ -224,19 +246,13 @@
 							<pattern>yyyy</pattern>
 						</configuration>
 					</execution>
-					<execution>
-						<id>released-version</id>
-						<goals>
-							<goal>released-version</goal>
-						</goals>
-					</execution>
 				</executions>
 			</plugin>
 			<plugin>
 				<!-- filtering and copying of additional files; these will *not* be included 
 					in the jar -->
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>3.0.2</version>
 				<executions>
 					<execution>
 						<id>filter-main-resources</id>
@@ -251,24 +267,11 @@
 									<directory>src/main/resources</directory>
 									<filtering>true</filtering>
 									<includes>
-										<include>README.md</include>
+										<include>README.txt</include>
 									</includes>
 								</resource>
 							</resources>
 						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<!-- package test jar to reuse tests -->
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.2.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>test-jar</goal>
-						</goals>
 					</execution>
 				</executions>
 			</plugin>
@@ -322,7 +325,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
-						<version>3.2.1</version>
+						<version>3.0.1</version>
 						<executions>
 							<execution>
 								<id>attach-sources</id>
@@ -335,7 +338,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>3.3.0</version>
+						<version>3.0.0-M1</version>
 						<executions>
 							<execution>
 								<id>attach-javadocs</id>
@@ -343,8 +346,7 @@
 									<goal>jar</goal>
 								</goals>
 								<configuration>
-									<additionalOptions>${javadoc.opts}</additionalOptions>
-									<source>8</source>
+									<additionalparam>${javadoc.opts}</additionalparam>
 								</configuration>
 							</execution>
 						</executions>
@@ -352,7 +354,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>3.0.1</version>
+						<version>1.6</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>

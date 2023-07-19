@@ -22,8 +22,6 @@
 package org.liveontologies.puli;
 
 import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,7 +53,7 @@ import com.google.common.collect.SetMultimap;
  *            the type of inferences in proofs
  */
 public class InferenceDerivabilityChecker<C, I extends Inference<? extends C>>
-		implements DerivabilityCheckerWithBlocking<C, I>, Proof<I> {
+		implements DerivabilityCheckerWithBlocking<C> {
 
 	// logger for this class
 	private static final Logger LOGGER_ = LoggerFactory
@@ -106,7 +104,8 @@ public class InferenceDerivabilityChecker<C, I extends Inference<? extends C>>
 	 * a map containing inferences in {@link #firedInferencesByPremises_} with a
 	 * key for every premise of such inference
 	 */
-	private final Map<C, I> firedInferencesByConclusions_ = new HashMap<C, I>();
+	private final ListMultimap<C, I> firedInferencesByConclusions_ = ArrayListMultimap
+			.create();
 
 	/**
 	 * a map from conclusions to iterators over all inferences in
@@ -144,26 +143,9 @@ public class InferenceDerivabilityChecker<C, I extends Inference<? extends C>>
 		initBlocking();
 		toCheck(conclusion);
 		process();
-		boolean derivable = derivable_.contains(conclusion)
-				&& !blocked_.contains(conclusion);
+		boolean derivable = derivable_.contains(conclusion);
 		LOGGER_.trace("{}: derivable: {}", conclusion, derivable);
 		return derivable;
-	}
-
-	@Override
-	public Proof<I> getDerivation(C conclusion) {
-		if (!isDerivable(conclusion)) {
-			return null;
-		}
-		// else construct proof of fired inferences
-		return new Proof<I>() {
-
-			@Override
-			public Collection<? extends I> getInferences(Object conclusion) {
-				return Collections.singleton(
-						firedInferencesByConclusions_.get(conclusion));
-			}
-		};
 	}
 
 	@Override
@@ -248,16 +230,13 @@ public class InferenceDerivabilityChecker<C, I extends Inference<? extends C>>
 		}
 	}
 
-	private boolean derive(C conclusion) {
-		if (!derivable_.add(conclusion)) {
-			return false;
+	private void derivable(C conclusion) {
+		if (derivable_.add(conclusion)) {
+			LOGGER_.trace("{}: derived", conclusion);
+			if (!blocked_.contains(conclusion)) {
+				toPropagate_.add(conclusion);
+			}
 		}
-		// else propagate
-		LOGGER_.trace("{}: derived", conclusion);
-		if (!blocked_.contains(conclusion)) {
-			toPropagate_.add(conclusion);
-		}
-		return true;
 	}
 
 	private void process() {
@@ -336,10 +315,7 @@ public class InferenceDerivabilityChecker<C, I extends Inference<? extends C>>
 	private void fire(I inf) {
 		LOGGER_.trace("{}: fire", inf);
 		C conclusion = inf.getConclusion();
-		getRemainingInferences(conclusion).add(inf);
-		if (!derive(conclusion)) {
-			return;
-		}
+		derivable(conclusion);
 		firedInferencesByConclusions_.put(inf.getConclusion(), inf);
 		List<? extends C> premises = inf.getPremises();
 		for (int pos = 0; pos < premises.size(); pos++) {
@@ -371,21 +347,17 @@ public class InferenceDerivabilityChecker<C, I extends Inference<? extends C>>
 			if (!blocked_.contains(conclusion)) {
 				toCheck_.addLast(conclusion);
 			}
-			I fired = firedInferencesByConclusions_.remove(conclusion);
-			for (C premise : fired.getPremises()) {
-				firedInferencesByPremises_.remove(premise, fired);
+			List<I> fired = firedInferencesByConclusions_.removeAll(conclusion);
+			for (I inf : fired) {
+				for (C premise : inf.getPremises()) {
+					firedInferencesByPremises_.remove(premise, inf);
+				}
 			}
+			getRemainingInferences(conclusion).addAll(fired);
 			for (I inf : firedInferencesByPremises_.get(conclusion)) {
 				toSetUnknown_.add(inf.getConclusion());
 			}
 		}
-	}
-
-	@Override
-	public Collection<? extends I> getInferences(Object conclusion) {
-		I inference = firedInferencesByConclusions_.get(conclusion);
-		return inference == null ? Collections.<I> emptySet()
-				: Collections.singleton(inference);
 	}
 
 }

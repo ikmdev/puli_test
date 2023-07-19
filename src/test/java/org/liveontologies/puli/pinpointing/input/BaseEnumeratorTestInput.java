@@ -21,9 +21,31 @@
  */
 package org.liveontologies.puli.pinpointing.input;
 
-import org.liveontologies.puli.TestInputManifestBuilder;
+import java.util.Set;
 
-public abstract class BaseEnumeratorTestInput
-		extends TestInputManifestBuilder<String, Integer> {
+import org.liveontologies.puli.InferenceJustifier;
+import org.liveontologies.puli.JustifiedInference;
+import org.liveontologies.puli.Proof;
+import org.liveontologies.puli.ProofAndJustifierBuilder;
+import org.liveontologies.puli.pinpointing.EnumeratorTestInput;
+
+public abstract class BaseEnumeratorTestInput<C, A>
+		implements EnumeratorTestInput<C, JustifiedInference<C, A>, A> {
+
+	private final ProofAndJustifierBuilder<C, A> builder_;
+
+	BaseEnumeratorTestInput(final ProofAndJustifierBuilder<C, A> builder) {
+		this.builder_ = builder;
+	}
+
+	@Override
+	public Proof<? extends JustifiedInference<C, A>> getProof() {
+		return builder_.build();
+	}
+
+	@Override
+	public InferenceJustifier<? super JustifiedInference<C, A>, ? extends Set<? extends A>> getJustifier() {
+		return builder_.buildJustifier();
+	}
 
 }

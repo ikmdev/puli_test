@@ -19,24 +19,23 @@
  * limitations under the License.
  * #L%
  */
-package org.liveontologies.puli.pinpointing.input.justifications;
+package org.liveontologies.puli.pinpointing;
 
 import java.util.Collection;
 import java.util.Set;
 
-import org.liveontologies.puli.pinpointing.input.Minimization;
+import org.liveontologies.puli.Inference;
+import org.liveontologies.puli.InferenceJustifier;
+import org.liveontologies.puli.Proof;
 
-import com.google.common.collect.ImmutableSet;
+public interface EnumeratorTestInput<C, I extends Inference<? extends C>, A> {
 
-public class MinimizationJustifications extends Minimization {
+	C getQuery();
 
-	@Override
-	public Collection<? extends Set<? extends Integer>> getExpectedResult() {
-		// @formatter:off
-		return ImmutableSet.of(
-				ImmutableSet.of(1, 2)
-			);
-		// @formatter:on
-	}
+	Proof<? extends I> getProof();
+
+	InferenceJustifier<? super I, ? extends Set<? extends A>> getJustifier();
+
+	Collection<? extends Set<? extends A>> getExpectedResult();
 
 }

@@ -19,24 +19,28 @@
  * limitations under the License.
  * #L%
  */
-package org.liveontologies.puli.pinpointing.input.justifications;
+package org.liveontologies.puli.pinpointing;
 
-import java.util.Collection;
-import java.util.Set;
+/**
+ * Instances of this interface may monitor the interruption status.
+ * 
+ * @author Peter Skocovsky
+ */
+public interface InterruptMonitor {
 
-import org.liveontologies.puli.pinpointing.input.Minimization;
+	/**
+	 * @return {@code true} after this monitor was notified about interruption,
+	 *         {@code false} if it was not.
+	 */
+	boolean isInterrupted();
 
-import com.google.common.collect.ImmutableSet;
+	public static final InterruptMonitor DUMMY = new InterruptMonitor() {
 
-public class MinimizationJustifications extends Minimization {
+		@Override
+		public boolean isInterrupted() {
+			return false;
+		}
 
-	@Override
-	public Collection<? extends Set<? extends Integer>> getExpectedResult() {
-		// @formatter:off
-		return ImmutableSet.of(
-				ImmutableSet.of(1, 2)
-			);
-		// @formatter:on
-	}
+	};
 
 }

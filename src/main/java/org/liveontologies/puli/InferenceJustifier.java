@@ -19,24 +19,25 @@
  * limitations under the License.
  * #L%
  */
-package org.liveontologies.puli.pinpointing.input.justifications;
+package org.liveontologies.puli;
 
-import java.util.Collection;
-import java.util.Set;
+/**
+ * Provides justifications for inferences.
+ * 
+ * @author Peter Skocovsky
+ *
+ * @param <I>
+ *            The type of inferences supported by this justifier
+ * @param <J>
+ *            The type of justifications of the inferences.
+ */
+public interface InferenceJustifier<I extends Inference<?>, J> {
 
-import org.liveontologies.puli.pinpointing.input.Minimization;
-
-import com.google.common.collect.ImmutableSet;
-
-public class MinimizationJustifications extends Minimization {
-
-	@Override
-	public Collection<? extends Set<? extends Integer>> getExpectedResult() {
-		// @formatter:off
-		return ImmutableSet.of(
-				ImmutableSet.of(1, 2)
-			);
-		// @formatter:on
-	}
+	/**
+	 * @param inference
+	 * @return an object that is responsible for this inference, i.e., the
+	 *         reason why this inference takes place
+	 */
+	J getJustification(I inference);
 
 }

@@ -21,31 +21,52 @@
  */
 package org.liveontologies.puli;
 
-public class ProofBuilder<C, A, B extends ProofBuilder<C, A, B>>
-		extends AbstractBuilder<B> {
+public class ProofBuilder<C> {
 
-	private final BaseProof<AxiomPinpointingInference<C, A>> proof_ = new BaseProof<>();
+	private final BaseProof<Inference<C>> proof_ = new BaseProof<Inference<C>>();
 
-	public BaseProof<AxiomPinpointingInference<C, A>> getProof() {
+	/**
+	 * use {@link #create()}
+	 */
+	ProofBuilder() {
+	}
+
+	public static <C> ProofBuilder<C> create() {
+		return new ProofBuilder<C>();
+	}
+
+	public Proof<? extends Inference<C>> build() {
 		return proof_;
 	}
 
-	public ProofInferenceBuilder conclusion(C conclusion) {
-		ProofInferenceBuilder result = new ProofInferenceBuilder();
-		return result.conclusion(conclusion);
+	public ThisInferenceBuilder conclusion(C conclusion) {
+		ThisInferenceBuilder result = new ThisInferenceBuilder();
+		result.conclusion(conclusion);
+		return result;
 	}
-	
-	public class ProofInferenceBuilder extends
-			AxiomPinpointingInferenceBuilder<C, A, ProofInferenceBuilder> {
 
-		protected ProofInferenceBuilder() {
+	public class ThisInferenceBuilder extends InferenceBuilder<C> {
+
+		protected ThisInferenceBuilder() {
 			super(INF_NAME);
-			setBuilder(this);
 		}
 
-		public B add() {
-			proof_.produce(build());
-			return ProofBuilder.this.getBuilder();
+		@Override
+		ThisInferenceBuilder conclusion(C conclusion) {
+			super.conclusion(conclusion);
+			return this;
+		}
+
+		@Override
+		public ThisInferenceBuilder premise(C premise) {
+			super.premise(premise);
+			return this;
+		}
+
+		public Inference<C> add() {
+			Inference<C> inference = build();
+			proof_.produce(inference);
+			return inference;
 		}
 
 	}

@@ -29,11 +29,8 @@ package org.liveontologies.puli;
  * @author Yevgeny Kazakov
  *
  * @param <C>
- *            the type of conclusions
- * @param <I>
- *            the type of inferences
  */
-public interface DerivabilityChecker<C, I extends Inference<? extends C>> {
+public interface DerivabilityChecker<C> {
 
 	/**
 	 * Checks if a given conclusion is derivable
@@ -44,15 +41,5 @@ public interface DerivabilityChecker<C, I extends Inference<? extends C>> {
 	 *         otherwise
 	 */
 	public boolean isDerivable(C conclusion);
-
-	/**
-	 * Computes a derivation for a given conclusion. A derivation is a special
-	 * {@link Proof} in which every conclusion has exactly one inference from
-	 * previously derived conclusions and there are no cycles in inferences
-	 * 
-	 * @param conclusion
-	 * @return the proof consisting of only derivable conclusions
-	 */
-	public Proof<I> getDerivation(C conclusion);
 
 }

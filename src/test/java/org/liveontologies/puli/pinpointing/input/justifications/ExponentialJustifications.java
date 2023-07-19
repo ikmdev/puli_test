@@ -21,19 +21,25 @@
  */
 package org.liveontologies.puli.pinpointing.input.justifications;
 
-import org.liveontologies.puli.pinpointing.BaseAxiomPinpointingTestInput;
+import java.util.Collection;
+import java.util.Set;
+
 import org.liveontologies.puli.pinpointing.input.Exponential;
 
-public class ExponentialJustifications extends BaseAxiomPinpointingTestInput {
+import com.google.common.collect.ImmutableSet;
+
+public class ExponentialJustifications extends Exponential {
 
 	@Override
-	protected void build() {
-		input(new Exponential());
-
-		justification(0, 1, 3);
-		justification(0, 1, 4);
-		justification(0, 2, 3);
-		justification(0, 2, 4);
+	public Collection<? extends Set<? extends Integer>> getExpectedResult() {
+		// @formatter:off
+		return ImmutableSet.of(
+				ImmutableSet.of(0, 1, 3),
+				ImmutableSet.of(0, 1, 4),
+				ImmutableSet.of(0, 2, 3),
+				ImmutableSet.of(0, 2, 4)
+			);
+		// @formatter:on
 	}
 
 }

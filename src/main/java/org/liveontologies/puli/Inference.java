@@ -31,7 +31,7 @@ import java.util.List;
  * @author Yevgeny Kazakov
  *
  * @param <C>
- *            the type of conclusions and premises this inference operates with
+ *            the type of conclusions and premises this inference operate with
  */
 public interface Inference<C> {
 

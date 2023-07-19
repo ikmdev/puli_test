@@ -19,24 +19,24 @@
  * limitations under the License.
  * #L%
  */
-package org.liveontologies.puli.pinpointing.input.justifications;
+package org.liveontologies.puli;
 
-import java.util.Collection;
 import java.util.Set;
 
-import org.liveontologies.puli.pinpointing.input.Minimization;
+public class InferenceJustifiers {
 
-import com.google.common.collect.ImmutableSet;
+	private InferenceJustifiers() {
+		// Forbid instantiation of an utility class.
+	}
 
-public class MinimizationJustifications extends Minimization {
-
-	@Override
-	public Collection<? extends Set<? extends Integer>> getExpectedResult() {
-		// @formatter:off
-		return ImmutableSet.of(
-				ImmutableSet.of(1, 2)
-			);
-		// @formatter:on
+	/**
+	 * @return An {@link InferenceJustifier} that justifies inferences by a set
+	 *         containing the conclusion if the inference is an asserted
+	 *         inference, and by an empty set otherwise.
+	 * @see Inferences#isAsserted
+	 */
+	public static <C> InferenceJustifier<Inference<C>, ? extends Set<? extends C>> justifyAssertedInferences() {
+		return AssertedConclusionInferenceJustifier.getInstance();
 	}
 
 }

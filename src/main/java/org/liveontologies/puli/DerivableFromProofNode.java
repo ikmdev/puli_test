@@ -29,7 +29,7 @@ import com.google.common.base.Preconditions;
 class DerivableFromProofNode<C> extends DerivableProofNode<C> {
 
 	DerivableFromProofNode(ProofNode<C> delegate,
-			DerivabilityChecker<ProofNode<?>, ProofStep<?>> checker) {
+			DerivabilityChecker<ProofNode<?>> checker) {
 		super(delegate, checker);
 	}
 
