@@ -23,12 +23,6 @@ package org.liveontologies.puli.pinpointing;
 
 import java.util.Collection;
 
-/**
- * A collection of static methods for working with {@link PriorityComparator}s
- * 
- * @author Yevgeny Kazakov
- *
- */
 public class PriorityComparators {
 
 	private PriorityComparators() {
@@ -41,12 +35,6 @@ public class PriorityComparators {
 	 */
 	public static <E> PriorityComparator<Collection<E>, Integer> cardinality() {
 		return new NaturalPriorityComparator<Collection<E>, Integer>() {
-
-			@Override
-			public String toString() {
-				return PriorityComparator.class.getSimpleName()
-						+ ".cardinality";
-			}
 
 			@Override
 			public Integer getPriority(final Collection<E> original) {
@@ -62,11 +50,6 @@ public class PriorityComparators {
 	 */
 	public static <T> PriorityComparator<T, Integer> toStringLength() {
 		return new NaturalPriorityComparator<T, Integer>() {
-
-			@Override
-			public String toString() {
-				return PriorityComparator.class.getSimpleName() + ".length";
-			}
 
 			@Override
 			public Integer getPriority(final T original) {

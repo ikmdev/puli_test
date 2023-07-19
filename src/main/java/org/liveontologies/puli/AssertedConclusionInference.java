@@ -23,7 +23,6 @@ package org.liveontologies.puli;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A special inference representing that a conclusion is derivable from no
@@ -36,7 +35,7 @@ import java.util.Set;
  *            the type of conclusions and premises of this inference
  */
 public class AssertedConclusionInference<C> extends Delegator<C>
-		implements AxiomPinpointingInference<C, C> {
+		implements Inference<C> {
 
 	public static String NAME = "Asserted Conclusion";
 
@@ -62,11 +61,6 @@ public class AssertedConclusionInference<C> extends Delegator<C>
 	@Override
 	public String toString() {
 		return Inferences.toString(this);
-	}
-
-	@Override
-	public Set<? extends C> getJustification() {
-		return Collections.singleton(getConclusion());
 	}
 
 }

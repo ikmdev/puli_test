@@ -23,15 +23,10 @@ package org.liveontologies.puli;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 
 /**
  * A collection of static methods for working with {@link Proof}s
@@ -89,7 +84,6 @@ public class Proofs {
 	 *         that for each conclusion returns the union of inferences returned
 	 *         by the proofs in the argument
 	 */
-	@SafeVarargs
 	public static <I extends Inference<?>> Proof<I> union(
 			final Proof<? extends I>... proofs) {
 		return new ProofUnion<I>(proofs);
@@ -100,7 +94,7 @@ public class Proofs {
 	 * @return the {@link Proof} that has all inferences of the given
 	 *         {@link Proof} except for the asserted inferences, i.e., all
 	 *         inferences for which {@link Inferences#isAsserted(Inference)}
-	 *         returns {@code true}.
+	 *         returns {@code false}.
 	 */
 	public static <I extends Inference<?>> Proof<I> removeAssertedInferences(
 			final Proof<? extends I> proof) {
@@ -113,51 +107,11 @@ public class Proofs {
 	 * @return the {@link Proof} that has all inferences of the given
 	 *         {@link Proof} except for the asserted inferences (inferences for
 	 *         which {@link Inferences#isAsserted(Inference)} returns
-	 *         {@code true}), whose conclusions are not in the given set.
+	 *         {@code false}), whose conclusions are not in the given set.
 	 */
 	public static <I extends Inference<?>> Proof<I> removeAssertedInferences(
 			final Proof<? extends I> proof, final Set<?> assertedConclusions) {
 		return new RemoveAssertedProof<I>(proof, assertedConclusions);
-	}
-
-	public static <I extends Inference<?>, J extends Inference<?>> Proof<J> transform(
-			final Proof<I> proof, Function<? super I, J> transformatin) {
-		return new Proof<J>() {
-
-			@Override
-			public Collection<J> getInferences(Object conclusion) {
-				return Collections2.transform(proof.getInferences(conclusion),
-						transformatin);
-			}
-		};
-	}
-
-	public static <C> AxiomPinpointingInference<C, C> justifyAsserted(
-			Inference<? extends C> inf) {
-		return new AssertedAxiomPinpointingInferenceAdapter<>(inf);
-	}
-
-	public static <C> Proof<AxiomPinpointingInference<C, C>> justifyAsserted(
-			Proof<? extends Inference<? extends C>> proof) {
-		return transform(proof,
-				new Function<Inference<? extends C>, AxiomPinpointingInference<C, C>>() {
-
-					@Override
-					public AxiomPinpointingInference<C, C> apply(
-							Inference<? extends C> inference) {
-						return justifyAsserted(inference);
-					}
-				});
-	}
-
-	/**
-	 * @param proof
-	 * @return {@link Proof} that caches all {@link Proof#getInferences(Object)}
-	 *         requests of the input {@link Proof}
-	 */
-	public static <I extends Inference<?>> Proof<I> cache(
-			Proof<? extends I> proof) {
-		return new CachingProof<I>(proof);
 	}
 
 	/**
@@ -168,7 +122,7 @@ public class Proofs {
 	 */
 	public static <I extends Inference<?>> DynamicProof<I> cache(
 			DynamicProof<? extends I> proof) {
-		return new CachingDynamicProof<I>(proof);
+		return new CachingProof<I>(proof);
 	}
 
 	/**
@@ -208,36 +162,6 @@ public class Proofs {
 		return result;
 	}
 
-	public static <C, I extends Inference<? extends C>> Set<C> unfoldTopologically(
-			Proof<? extends I> proof, C goal, Producer<? super I> producer) {
-		Set<C> result = new HashSet<C>();
-		Deque<C> toExpand = new ArrayDeque<C>();
-		result.add(goal);
-		toExpand.add(goal);
-		for (;;) {
-			C next = toExpand.peekFirst();
-			if (next == null) {
-				break;
-			}
-			boolean expanded = true;
-			for (I inf : proof.getInferences(next)) {
-				for (C premise : inf.getPremises()) {
-					if (result.add(premise)) {
-						toExpand.addFirst(premise);
-						expanded = false;
-					}
-				}
-			}
-			if (expanded) {
-				toExpand.removeFirst();
-				for (I inf : proof.getInferences(next)) {
-					producer.produce(inf);
-				}
-			}
-		}
-		return result;
-	}
-
 	/**
 	 * @param proof
 	 * @param goal
@@ -260,12 +184,12 @@ public class Proofs {
 	 * @param goal
 	 * @return the set of conclusions without which the goal would not be
 	 *         derivable using the given inferences; i.e., every derivation
-	 *         using the inferences must use every essential conclusion
+	 *         using the inferences must use at least one essential conclusion
 	 */
 	public static <C, I extends Inference<? extends C>> Set<C> getEssentialConclusions(
 			Proof<I> proof, C goal) {
 		Set<C> result = new HashSet<C>();
-		DerivabilityCheckerWithBlocking<C, I> checker = new InferenceDerivabilityChecker<C, I>(
+		DerivabilityCheckerWithBlocking<C> checker = new InferenceDerivabilityChecker<C, I>(
 				proof);
 		for (C candidate : unfoldRecursively(proof, goal,
 				Producer.Dummy.<I> get())) {
@@ -291,7 +215,7 @@ public class Proofs {
 	public static <C, I extends Inference<? extends C>> void expand(
 			Set<C> derivable, Proof<? extends I> proof, C goal,
 			Producer<? super I> producer) {
-		InferenceExpander.<C, I> expand(derivable, proof, goal, producer);
+		InferenceExpander.expand(derivable, proof, goal, producer);
 	}
 
 	/**
@@ -312,24 +236,6 @@ public class Proofs {
 	}
 
 	/**
-	 * @param <Q>
-	 * @param <I>
-	 * @param prover
-	 * @return a prover returning pruned proofs of the given prover
-	 */
-	public static <Q, I extends Inference<?>> Prover<Q, I> prune(
-			Prover<? super Q, ? extends I> prover) {
-		return new Prover<Q, I>() {
-
-			@Override
-			public Proof<? extends I> getProof(Q query) {
-				return prune(prover.getProof(query), query);
-			}
-
-		};
-	}
-
-	/**
 	 * Recursively prints all inferences for the derived goal and the premises
 	 * of such inferences to the standard output using ASCII characters. Due to
 	 * potential cycles, inferences for every conclusion are printed only once
@@ -337,10 +243,9 @@ public class Proofs {
 	 * the same conclusion is labeled by {@code *}.
 	 * 
 	 * @param proof
-	 *                  the {@link Proof} from which to take the inferences
+	 *            the {@link Proof} from which to take the inferences
 	 * @param goal
-	 *                  the conclusion starting from which the inferences are
-	 *                  printed
+	 *            the conclusion starting from which the inferences are printed
 	 */
 	public static void print(Proof<?> proof, Object goal) {
 		try {

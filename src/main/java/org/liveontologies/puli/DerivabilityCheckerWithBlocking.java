@@ -34,12 +34,9 @@ import java.util.Set;
  * @author Yevgeny Kazakov
  *
  * @param <C>
- *            the type of conclusions
- * @param <I>
- *            the type of inferences
  */
-public interface DerivabilityCheckerWithBlocking<C, I extends Inference<? extends C>>
-		extends DerivabilityChecker<C, I> {
+public interface DerivabilityCheckerWithBlocking<C>
+		extends DerivabilityChecker<C> {
 
 	/**
 	 * @return the set of conclusions that cannot be used in derivations when

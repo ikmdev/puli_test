@@ -27,11 +27,11 @@ class AcyclicDerivableProofNode<C> extends ConvertedProofNode<C> {
 
 	private final AcyclicDerivableProofNode<C> parent_;
 
-	private final DerivabilityCheckerWithBlocking<ProofNode<?>, ProofStep<?>> checker_;
+	private final DerivabilityCheckerWithBlocking<ProofNode<?>> checker_;
 
 	AcyclicDerivableProofNode(ProofNode<C> delegate,
 			AcyclicDerivableProofNode<C> parent,
-			DerivabilityCheckerWithBlocking<ProofNode<?>, ProofStep<?>> checker) {
+			DerivabilityCheckerWithBlocking<ProofNode<?>> checker) {
 		super(delegate);
 		this.parent_ = parent;
 		this.checker_ = checker;

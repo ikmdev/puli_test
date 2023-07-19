@@ -21,14 +21,28 @@
  */
 package org.liveontologies.puli.pinpointing.input;
 
-public class Linear extends BaseEnumeratorTestInput {
+import org.liveontologies.puli.ProofAndJustifierBuilder;
+
+public abstract class Linear extends BaseEnumeratorTestInput<String, Integer> {
+
+	private static ProofAndJustifierBuilder<String, Integer> getBuilder() {
+
+		final ProofAndJustifierBuilder<String, Integer> builder = new ProofAndJustifierBuilder<String, Integer>();
+
+		builder.conclusion("A").premise("B").axiom(1).add();
+		builder.conclusion("B").premise("C").axiom(2).add();
+		builder.conclusion("C").axiom(3).axiom(4).add();
+
+		return builder;
+	}
+
+	public Linear() {
+		super(getBuilder());
+	}
 
 	@Override
-	protected void build() {
-		conclusion("A").premise("B").axiom(1).add();
-		conclusion("B").premise("C").axiom(2).add();
-		conclusion("C").axiom(3).axiom(4).add();
-		query("A");
+	public String getQuery() {
+		return "A";
 	}
 
 }

@@ -1,3 +1,5 @@
+package org.liveontologies.puli;
+
 /*-
  * #%L
  * Proof Utility Library
@@ -19,28 +21,40 @@
  * limitations under the License.
  * #L%
  */
-package org.liveontologies.puli;
 
-public abstract class AbstractInference<C> implements Inference<C> {
+import java.util.List;
+import java.util.Set;
 
-	protected int hash = 0;
+public class JustifiedInference<C, A> extends BaseInference<C> {
+
+	final Set<A> justification_;
+
+	public JustifiedInference(final String name, final C conclusion,
+			final List<? extends C> premises, final Set<A> axioms) {
+		super(name, conclusion, premises);
+		this.justification_ = axioms;
+	}
 
 	@Override
-	public boolean equals(Object o) {
-		return Inferences.equals(this, o);
+	public boolean equals(final Object o) {
+		if (o instanceof JustifiedInference<?, ?>) {
+			return super.equals(o) && justification_
+					.equals(((JustifiedInference<?, ?>) o).justification_);
+		}
+		// else
+		return false;
 	}
 
 	@Override
 	public synchronized int hashCode() {
 		if (hash == 0) {
-			hash = Inferences.hashCode(this);
+			hash = Inferences.hashCode(this) + justification_.hashCode();
 		}
 		return hash;
 	}
 
-	@Override
-	public String toString() {
-		return Inferences.toString(this);
+	public Set<A> getJustification() {
+		return justification_;
 	}
 
 }

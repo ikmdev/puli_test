@@ -19,24 +19,32 @@
  * limitations under the License.
  * #L%
  */
-package org.liveontologies.puli.pinpointing.input.justifications;
+package org.liveontologies.puli.pinpointing;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
-import org.liveontologies.puli.pinpointing.input.Minimization;
+public class MinimalSubsetCollector<E>
+		implements MinimalSubsetEnumerator.Listener<E> {
 
-import com.google.common.collect.ImmutableSet;
+	private final Collection<Set<? extends E>> sets_;
 
-public class MinimizationJustifications extends Minimization {
+	public MinimalSubsetCollector(final Collection<Set<? extends E>> sets) {
+		this.sets_ = sets;
+	}
+
+	public MinimalSubsetCollector() {
+		this(new ArrayList<Set<? extends E>>());
+	}
 
 	@Override
-	public Collection<? extends Set<? extends Integer>> getExpectedResult() {
-		// @formatter:off
-		return ImmutableSet.of(
-				ImmutableSet.of(1, 2)
-			);
-		// @formatter:on
+	public void newMinimalSubset(final Set<E> set) {
+		sets_.add(set);
+	}
+
+	public Collection<Set<? extends E>> getSets() {
+		return sets_;
 	}
 
 }
