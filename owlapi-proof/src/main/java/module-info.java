@@ -28,5 +28,7 @@ open module org.liveontologies.owlapi.proof {
 	requires org.liveontologies.puli;
 
 	requires org.semanticweb.owlapi;
+	
+	exports org.liveontologies.owlapi.proof;
 
 }
