@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<artifactId>puli-parent</artifactId>
 		<groupId>dev.ikm.puli</groupId>
+		<artifactId>puli-parent</artifactId>
 		<version>0.2.2-SNAPSHOT</version>
 	</parent>
 
@@ -17,7 +15,6 @@
 		Extension to the OWL API interfaces to represent and manipulate with
 		proofs.
 	</description>
-
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
@@ -35,31 +32,21 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 		</dependency>
+		<!-- dev.ikm OWL API dependencies-->
+		<dependency>
+			<groupId>dev.ikm.owlapi</groupId>
+			<artifactId>owlapi-api</artifactId>
+		</dependency>
+		<!-- Project dependencies-->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>puli</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>dev.ikm.owlapi</groupId>
-			<artifactId>owlapi-apibinding</artifactId>
-			<version>${owlapi4.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>dev.ikm.owlapi</groupId>
-			<artifactId>owlapi-api</artifactId>
-			<version>${owlapi4.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>dev.ikm.owlapi</groupId>
-			<artifactId>owlapi-impl</artifactId>
-			<version>${owlapi4.version}</version>
-			<scope>provided</scope>
-		</dependency>
+		<!-- Test dependencies-->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
 	</dependencies>
-
 </project>

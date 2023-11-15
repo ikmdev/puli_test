@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<artifactId>puli-parent</artifactId>
 		<groupId>dev.ikm.puli</groupId>
+		<artifactId>puli-parent</artifactId>
 		<version>0.2.2-SNAPSHOT</version>
 	</parent>
 
@@ -17,7 +15,6 @@
 		A library for manipulating with proofs based on inference rules.
 	</description>
 	<url>https://github.com/liveontologies/${project.artifactId}</url>
-
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
@@ -35,14 +32,15 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 		</dependency>
+		<!-- dev.ikm JPMS dependencies-->
 		<dependency>
 			<groupId>dev.ikm.jpms</groupId>
 			<artifactId>guava</artifactId>
 		</dependency>
+		<!-- Test dependencies-->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
 	</dependencies>
-
 </project>

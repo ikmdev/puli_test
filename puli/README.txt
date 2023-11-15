@@ -21,4 +21,12 @@ A library for manipulating with proofs based on inference rules.
 
 For further information see: 
 
-https://github.com/liveontologies/puli 
+https://github.com/liveontologies/puli
+
+NOTE:
+
+Project forked June 9, 2023 from the October 11, 2017 release commit.
+
+Added module-info.java
+
+Ongoing POM maintenance

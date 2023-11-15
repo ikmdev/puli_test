@@ -1,6 +1,6 @@
 OWL API Proof Extension
 
-OWL API Proof Extension is Copyright (c) 2014 - 2023 
+OWL API Proof Extension is Copyright (c) 2014 - 2018 
 Live Ontologies Project
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,3 +22,11 @@ Extension to the OWL API interfaces to represent and manipulate with proofs.
 For further information see: 
 
 https://github.com/liveontologies/owlapi-proof 
+
+NOTE:
+
+Project forked June 9, 2023 from master.
+
+Added module-info.java
+
+Ongoing POM maintenance
