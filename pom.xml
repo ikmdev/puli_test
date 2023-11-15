@@ -4,24 +4,20 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>puli</artifactId>
-	<groupId>org.liveontologies</groupId>
+	<artifactId>puli-parent</artifactId>
+	<groupId>dev.ikm.puli</groupId>
 	<version>0.2.2-SNAPSHOT</version>
+	<packaging>pom</packaging>
 
-	<name>Proof Utility Library</name>
-	<description>
-		A library for manipulating with proofs based on inference rules.
-	</description>
-	<url>https://github.com/liveontologies/${project.artifactId}</url>
+	<name>Proof Utility</name>
+	<description>Proof Utility Parent</description>
 
-	<!--	<scm>-->
-	<!--
-	<connection>scm:git:https://github.com/liveontologies/${project.artifactId}.git</connection>-->
-	<!--
-	<developerConnection>scm:git:git@github.com:liveontologies/${project.artifactId}.git</developerConnection>-->
-	<!--		<url>https://github.com/liveontologies/${project.artifactId}</url>-->
-	<!--		<tag>HEAD</tag>-->
-	<!--	</scm>-->
+	<url>https://www.ikm.dev</url>
+	<inceptionYear>2023</inceptionYear>
+	<organization>
+		<name>Integrated Knowledge Management</name>
+		<url>https://www.ikm.dev</url>
+	</organization>
 
 	<licenses>
 		<license>
@@ -31,82 +27,70 @@
 		</license>
 	</licenses>
 
-	<organization>
-		<name>Live Ontologies Project</name>
-		<url>http://liveontologies.org</url>
-	</organization>
-
-	<inceptionYear>2014</inceptionYear>
-
-	<developers>
-		<developer>
-			<id>yevgeny</id>
-			<name>Yevgeny Kazakov</name>
-			<email>yevgeny.kazakov@uni-ulm.de</email>
-			<organization>Institute of Artificial Intelligence, University of
-				Ulm</organization>
-			<organizationUrl>http://www.uni-ulm.de/en/in/ki.html</organizationUrl>
-			<roles>
-				<role>developer</role>
-			</roles>
-			<timezone>1</timezone>
-		</developer>
-		<developer>
-			<id>pavel</id>
-			<name>Pavel Klinov</name>
-			<email>pavel.klinov@uni-ulm.de</email>
-			<organization>Institute of Artificial Intelligence, University of
-				Ulm</organization>
-			<organizationUrl>http://www.uni-ulm.de/en/in/ki.html</organizationUrl>
-			<roles>
-				<role>developer</role>
-			</roles>
-			<timezone>1</timezone>
-		</developer>
-		<developer>
-			<id>petesko</id>
-			<name>Peter Skocovsky</name>
-			<email>peter.skocovsky@uni-ulm.de</email>
-			<organization>Institute of Artificial Intelligence, University of
-				Ulm</organization>
-			<organizationUrl>http://www.uni-ulm.de/en/in/ki.html</organizationUrl>
-			<roles>
-				<role>developer</role>
-			</roles>
-			<timezone>1</timezone>
-		</developer>
-	</developers>
+	<modules>
+		<module>puli</module>
+		<module>owlapi-proof</module>
+	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>21</java.version>
 		<slf4j.version>2.0.7</slf4j.version>
+		<guava.version>31.1-jre-r1</guava.version>
+		<owlapi4.version>4.5.25-ikm-r3-SNAPSHOT</owlapi4.version>
+		<junit4.version>4.13.2</junit4.version>
+		<junit-jupiter-api.version>5.6.3</junit-jupiter-api.version>
 	</properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>dev.ikm.jpms</groupId>
-			<artifactId>guava</artifactId>
-			<version>31.1-jre-r1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.13.2</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-simple</artifactId>
+				<version>${slf4j.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<!-- dev.ikm JPMS dependencies-->
+			<dependency>
+				<groupId>dev.ikm.jpms</groupId>
+				<artifactId>guava</artifactId>
+				<version>${guava.version}</version>
+			</dependency>
+			<!-- dev.ikm OWL API dependencies-->
+			<dependency>
+				<groupId>dev.ikm.owlapi</groupId>
+				<artifactId>owlapi-api</artifactId>
+				<version>${owlapi4.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>dev.ikm.owlapi</groupId>
+				<artifactId>owlapi-apibinding</artifactId>
+				<version>${owlapi4.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>dev.ikm.owlapi</groupId>
+				<artifactId>owlapi-impl</artifactId>
+				<version>${owlapi4.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>dev.ikm.owlapi</groupId>
+				<artifactId>owlapi-parsers</artifactId>
+				<version>${owlapi4.version}</version>
+			</dependency>
+			<!-- Test dependencies-->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit4.version}</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
 		<pluginManagement>
