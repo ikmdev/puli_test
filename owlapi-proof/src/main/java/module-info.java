@@ -1,8 +1,6 @@
 /*-
  * #%L
  * OWL API Proof Extension
- * $Id:$
- * $HeadURL:$
  * %%
  * Copyright (C) 2023 Integrated Knowledge Management
  * %%
