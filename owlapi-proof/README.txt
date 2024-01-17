@@ -1,6 +1,6 @@
-Proof Utility Library
+OWL API Proof Extension
 
-Proof Utility Library is Copyright (c) 2014 - 2017 
+OWL API Proof Extension is Copyright (c) 2014 - 2018 
 Live Ontologies Project
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,16 @@ Live Ontologies Project
 
 ABOUT:
 
-A library for manipulating with proofs based on inference rules.
+Extension to the OWL API interfaces to represent and manipulate with proofs.
 
 For further information see: 
 
-https://github.com/liveontologies/puli 
+https://github.com/liveontologies/owlapi-proof 
+
+NOTE:
+
+Project forked June 9, 2023 from master.
+
+Added module-info.java
+
+Ongoing POM maintenance
