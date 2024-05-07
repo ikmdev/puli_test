@@ -23,7 +23,7 @@ pipeline {
     }
 
     environment {
-        TRUNK_BRANCH_NAME   = 'main'
+        TRUNK_BRANCH_NAME   = 'master'
         REPO_NAME           = "${GIT_URL.split('/')[4].split('\\.')[0]}"
         BRANCH_NAME         = "${GIT_BRANCH.startsWith('origin/') ? GIT_BRANCH['origin/'.length()..-1] : GIT_BRANCH}"
 
@@ -41,7 +41,7 @@ pipeline {
                 checkout scm
 
                 script {
-                    trunkBranchName = "main"
+                    trunkBranchName = "master"
 
                     pomModel = readMavenPom(file: 'pom.xml')
                     pomVersion = pomModel.getVersion()

@@ -36,7 +36,7 @@ pipeline {
     stages {
         stage('Maven Build') {
             when {
-                expression { return BRANCH_NAME == "main"}
+                expression { return BRANCH_NAME == "master"}
             }
             steps {
                 updateGitlabCommitStatus name: 'build', state: 'running'
@@ -57,7 +57,7 @@ pipeline {
 
         stage('Maven Build -- Feature Branch') {
             when {
-                expression { return BRANCH_NAME != "main"}
+                expression { return BRANCH_NAME != "master"}
             }
             steps {
                 updateGitlabCommitStatus name: 'build', state: 'running'
