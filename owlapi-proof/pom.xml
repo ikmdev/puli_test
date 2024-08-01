@@ -40,7 +40,7 @@
 		<!-- Project dependencies-->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>puli</artifactId>
+			<artifactId>puli_test_module</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<!-- Test dependencies-->
