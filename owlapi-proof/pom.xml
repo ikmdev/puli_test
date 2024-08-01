@@ -4,11 +4,11 @@
 
 	<parent>
 		<groupId>dev.ikm.puli</groupId>
-		<artifactId>puli-parent</artifactId>
+		<artifactId>puli_test_parent</artifactId>
 		<version>0.3.0-ikm-r1</version>
 	</parent>
 
-	<artifactId>owlapi-proof</artifactId>
+	<artifactId>owlapi_proof_test</artifactId>
 
 	<name>OWL API Proof Extension</name>
 	<description>

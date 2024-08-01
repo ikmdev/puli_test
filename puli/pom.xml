@@ -4,11 +4,11 @@
 
 	<parent>
 		<groupId>dev.ikm.puli</groupId>
-		<artifactId>puli-parent</artifactId>
+		<artifactId>puli_test_parent</artifactId>
 		<version>0.3.0-ikm-r1</version>
 	</parent>
 
-	<artifactId>puli</artifactId>
+	<artifactId>puli_test_module</artifactId>
 
 	<name>Proof Utility Library</name>
 	<description>
