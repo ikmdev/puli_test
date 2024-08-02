@@ -11,7 +11,7 @@ on:
         description: "(Optional) Enter Release Message"
   workflow_call:
     inputs:
-      new_version:
+      new_dev_version:
         type: string
         required: true
       release_version:
@@ -159,13 +159,13 @@ jobs:
         run: |
           mvn -B versions:set \
           -s ${{env.MAVEN_SETTING}} \
-          -DnewVersion=${{new_version}} \
+          -DnewVersion=${{new_dev_version}} \
           -DgenerateBackupPoms=false
 
       - name: Commit & Push
         run: |
           git add .
-          git commit -m 'Set next dev version to ${{new_version}}'
+          git commit -m 'Set next dev version to ${{new_dev_version}}'
           git push origin HEAD:master
           git push --tags origin
 
