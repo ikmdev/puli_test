@@ -12,17 +12,6 @@ on:
       release_message:
         type: string
         description: "(Optional) Enter Release Message"
-  workflow_call:
-    inputs:
-      new_dev_version:
-        type: string
-        required: true
-      release_version:
-        type: string
-        required: true
-      release_message:
-        type: string
-        required: false
 
 # Define environment parameters
 env:
