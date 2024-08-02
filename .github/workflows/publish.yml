@@ -3,18 +3,21 @@ name: Publish Artifacts Workflow
 run-name: 'Publish Artifacts -- ${{github.event.workflow_run.head_branch}}'
 
 on:
-  #workflow_run:
+  push:
+  pull_request:
+    #workflow_run:
     #workflows:
       #- Build Workflow
-    #types:
-      #- completed
+    types:
+      - completed
 
 
 jobs:
   publish-artifacts:
     name: Publish Artifacts
     runs-on: self-hosted
-    if: github.event.workflow_run.conclusion == 'success' && github.repository_owner == 'ikmdev'
+    #if: github.event.workflow_run.conclusion == 'success' && github.repository_owner == 'ikmdev'
+    if: github.repository_owner == 'ikmdev'
 
     env:
       ARTIFACT_REPOSITORY_ID: "maven-snapshots"
@@ -39,7 +42,8 @@ jobs:
           ref: ${{github.event.workflow_run.head_branch}}
 
       - name: Checkout ikmdev Code Repository
-        if:   github.event.workflow_run.event != 'pull_request' && github.event.workflow.name == 'Build Workflow'
+        #if:   github.event.workflow_run.event != 'pull_request' && github.event.workflow.name == 'Build Workflow'
+        if: github.event.workflow_run.event != 'pull_request'
         uses: actions/checkout@v4
 
       - name: Deploy To Nexus
