@@ -59,29 +59,37 @@ jobs:
       - name: Install XML2JS
         run: npm install xml2js
 
-      - name: Extract and Increment Version
-        id: increment_version
+      - name: Extract the current version from pom.xml
         run: |
-          # Extract the current version from pom.xml
-          CURRENT_VERSION=$(grep -oPm1 "(?<=<version>)[^<]+" pom.xml)
+          echo "POM_VERSION=$(grep -oPm1 "(?<=<version>)[^<]+" pom.xml)" >> $GITHUB_ENV
+
+      - name: Print Version
+        run: echo ${{env.POM_VERSION}}
           
-          # Split the version into parts
-          VERSION_PREFIX=$(echo $CURRENT_VERSION | grep -oE '^[0-9]+\.[0-9]+\.[0-9]+')
-          VERSION_SUFFIX=$(echo $CURRENT_VERSION | grep -oE '[a-zA-Z0-9\-]+$')
+      - name: Split the version into parts
+        id: splitCurrentVersion
+        run: |
+          echo "VERSION_PREFIX=$(echo $POM_VERSION | grep -oE '^[0-9]+\.[0-9]+\.[0-9]+')" >> GITHUB_OUTPUT
+          echo "VERSION_SUFFIX=$(echo $POM_VERSION | grep -oE '[a-zA-Z0-9\-]+$')" >> GITHUB_OUTPUT
           
-          # Extract the current numeric suffix
-          CURRENT_SUFFIX_NUMBER=$(echo $VERSION_SUFFIX | grep -oE '[0-9]+$')
+      - name: Extract the current numeric suffix
+        id: getCurrentSuffix
+        run: |
+          echo "CURRENT_SUFFIX_NUMBER=$(echo $VERSION_SUFFIX | grep -oE '[0-9]+$')" >> GITHUB_OUTPUT
           
-          # Increment the suffix number for new development version
-          NEW_SUFFIX_NUMBER=$((CURRENT_SUFFIX_NUMBER + 1))
+      - name: Increment the suffix number for new development version
+        id: increaseSuffix
+        run: |
+          echo "NEW_SUFFIX_NUMBER=$((CURRENT_SUFFIX_NUMBER + 1))" >> GITHUB_OUTPUT
           
           # Form the new versions
           RELEASE_VERSION="$VERSION_PREFIX"
           NEW_DEV_VERSION="$VERSION_PREFIX-ikm-r$NEW_SUFFIX_NUMBER-SNAPSHOT"
           
-          # Output the new versions
-          echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
-          echo "NEW_DEV_VERSION=$NEW_DEV_VERSION" >> $GITHUB_ENV
+      - name: Print Information
+        run: |
+          echo "Release Version = $RELEASE_VERSION" >> $GITHUB_ENV
+          echo "NEW_DEV_VERSION = $NEW_DEV_VERSION" >> $GITHUB_ENV
 
       - name: Set Release Version in pom.xml
         run: |
