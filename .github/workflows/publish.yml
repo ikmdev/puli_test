@@ -19,7 +19,7 @@ jobs:
     env:
       ARTIFACT_REPOSITORY_ID: "maven-snapshots"
       REPOSITORY_NAME: ${{github.repository}}
-      BRANCH: "main"
+      BRANCH: "master"
       MAVEN_FILE: '/home/ec2-user/maven/.m2/settings.xml'
 
     steps:
