@@ -88,17 +88,17 @@ jobs:
       - name: Form the new versions
         id: new release version
         run: |
-          echo "RELEASE_VERSION=$VERSION_PREFIX" >> GITHUB_OUTPUT
+          echo "RELEASE_VERSION=$((VERSION_PREFIX))" >> GITHUB_OUTPUT
 
       - name: Form the new versions
         id: new dev version
         run: |
-          echo "NEW_DEV_VERSION=$VERSION_PREFIX-ikm-r$NEW_SUFFIX_NUMBER-SNAPSHOT" >> GITHUB_OUTPUT
+          echo "NEW_DEV_VERSION=$((VERSION_PREFIX-ikm-r$NEW_SUFFIX_NUMBER-SNAPSHOT))" >> GITHUB_OUTPUT
           
       - name: Print Information
         run: |
-          echo "RELEASE_VERSION = $RELEASE_VERSION" >> $GITHUB_ENV
-          echo "NEW_DEV_VERSION = $NEW_DEV_VERSION" >> $GITHUB_ENV
+          echo "RELEASE_VERSION=$((RELEASE_VERSION))" >> $GITHUB_ENV
+          echo "NEW_DEV_VERSION=$((NEW_DEV_VERSION))" >> $GITHUB_ENV
 
       - name: Set Release Version in pom.xml
         run: |
