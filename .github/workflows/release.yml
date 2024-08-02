@@ -1,105 +1,54 @@
 name: Release Workflow
 
-run-name: "Releasing ${{ github.event.repository.name }} #${{github.run_number}}"
-
-# Trigger workflow manually
 on:
   push:
-#  pull_request:
-    #types:
-      #- completed
+
   workflow_dispatch:
-    inputs:
-      release_message:
-        type: string
-        description: "(Optional) Enter Release Message"
-  workflow_call:
-    inputs:
-      new_dev_version:
-        type: string
-        required: true
-      release_version:
-        type: string
-        required: true
-      release_message:
-        type: string
-        required: false
 
-# Define environment parameters
-env:
-  BRANCH_NAME: ${{github.ref_name}}
-  TRUNK_BRANCH_NAME: master
-  RELEASE_MESSAGE: ${{github.event.inputs.release_message}}
-  MAVEN_SETTING: '/home/ec2-user/maven/.m2/settings.xml'
-
-# Define jobs within the workflow
 jobs:
-  initialization:
-    if: github.repository_owner == 'ikmdev'
+  release:
     runs-on: ubuntu-latest
-    name: Initialization
 
     steps:
-      - name: Verify Branch
-        if: env.BRANCH_NAME != env.TRUNK_BRANCH_NAME
-        run: |
-          echo "ERROR: Attempting to release from branch ${{env.BRANCH_NAME}}. Release from ${{env.TRUNK_BRANCH_NAME}} branch only"
-          exit 1
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-      - name: Checkout Code Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      - name: Set up Java
+        uses: actions/setup-java@v2
         with:
-          distribution: 'adopt'
-          java-version: '21'
+          java-version: '11'
 
       - name: Set up Node.js (for XML parsing)
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: '14'
 
       - name: Install XML2JS
         run: npm install xml2js
 
-      - name: Extract the current version from pom.xml
+      - name: Extract and Increment Version
+        id: increment_version
         run: |
-          echo "POM_VERSION=$(grep -oPm1 "(?<=<version>)[^<]+" pom.xml)" >> $GITHUB_ENV
-
-      - name: Print Version
-        run: echo ${{env.POM_VERSION}}
+          # Extract the current version from pom.xml
+          CURRENT_VERSION=$(grep -oPm1 "(?<=<version>)[^<]+" pom.xml)
           
-      - name: Split the version into parts
-        id: splitCurrentVersion
-        run: |
-          echo "VERSION_PREFIX=$(echo $POM_VERSION | grep -oE '^[0-9]+\.[0-9]+\.[0-9]+')" >> GITHUB_OUTPUT
-          echo "VERSION_SUFFIX=$(echo $POM_VERSION | grep -oE '[a-zA-Z0-9\-]+$')" >> GITHUB_OUTPUT
+          # Split the version into parts
+          VERSION_PREFIX=$(echo $CURRENT_VERSION | grep -oE '^[0-9]+\.[0-9]+\.[0-9]+')
+          VERSION_SUFFIX=$(echo $CURRENT_VERSION | grep -oE '[a-zA-Z0-9\-]+$')
           
-      - name: Extract the current numeric suffix
-        id: getCurrentSuffix
-        run: |
-          echo "CURRENT_SUFFIX_NUMBER=$(echo $VERSION_SUFFIX | grep -oE '[0-9]+$')" >> GITHUB_OUTPUT
+          # Extract the current numeric suffix
+          CURRENT_SUFFIX_NUMBER=$(echo $VERSION_SUFFIX | grep -oE '[0-9]+$')
           
-      - name: Increment the suffix number for new development version
-        id: increaseSuffix
-        run: |
-          echo "NEW_SUFFIX_NUMBER=$((CURRENT_SUFFIX_NUMBER + 1))" >> GITHUB_OUTPUT
+          # Increment the suffix number for new development version
+          NEW_SUFFIX_NUMBER=$((CURRENT_SUFFIX_NUMBER + 1))
           
-      - name: Form the new versions
-        id: new release version
-        run: |
-          echo "RELEASE_VERSION=$((VERSION_PREFIX))" >> GITHUB_OUTPUT
-
-      - name: Form the new versions
-        id: new dev version
-        run: |
-          echo "NEW_DEV_VERSION=$((VERSION_PREFIX-ikm-r$NEW_SUFFIX_NUMBER-SNAPSHOT))" >> GITHUB_OUTPUT
+          # Form the new versions
+          RELEASE_VERSION="$VERSION_PREFIX"
+          NEW_DEV_VERSION="$VERSION_PREFIX-ikm-r$NEW_SUFFIX_NUMBER-SNAPSHOT"
           
-      - name: Print Information
-        run: |
-          echo "RELEASE_VERSION=$((RELEASE_VERSION))" >> $GITHUB_ENV
-          echo "NEW_DEV_VERSION=$((NEW_DEV_VERSION))" >> $GITHUB_ENV
+          # Output the new versions
+          echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+          echo "NEW_DEV_VERSION=$NEW_DEV_VERSION" >> $GITHUB_ENV
 
       - name: Set Release Version in pom.xml
         run: |
@@ -128,9 +77,11 @@ jobs:
 
       - name: Commit Release Version
         run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git commit -am "Set release version to ${{ env.RELEASE_VERSION }}"
           git tag ${{ env.RELEASE_VERSION }}
-          git push origin master --tags
+          git push origin main --tags
 
       - name: Build Release Version
         run: mvn clean package
@@ -163,114 +114,4 @@ jobs:
       - name: Commit New Development Version
         run: |
           git commit -am "Set new development version to ${{ env.NEW_DEV_VERSION }}"
-          git push origin master
-
-      #- name: Create tag
-        #run: |
-          #git remote set-url origin https://git:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git
-          #git config user.name "Cloud User"
-          #git add .
-          #git commit -m 'Release ${{release_version}}'
-          #git tag -a ${{release_version}} -m '${{release_version}}' --force
-
-      - name: Set Dev Version
-        run: |
-          mvn -B versions:set \
-          -s ${{env.MAVEN_SETTING}} \
-          -DnewVersion=${{NEW_DEV_VERSION}} \
-          -DgenerateBackupPoms=false
-
-      - name: Commit & Push
-        run: |
-          git add .
-          git commit -m 'Set next dev version to ${{NEW_DEV_VERSION}}'
-          git push origin HEAD:master
-          git push --tags origin
-
-  # Creating a release
-  create_release:
-    name: Create Release
-    permissions: write-all
-
-    needs:
-      - set_build_and_tag_release_and_set_next_dev_version
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Modify Release Message
-        if: inputs.release_message == ''
-        run: echo "RELEASE_MESSAGE=Release ${{inputs.release_version}}" >> $GITHUB_ENV
-
-      - name: Create Release
-        id: create_release
-        run: |
-          curl -L \
-           -X POST \
-           -H "Accept: application/vnd.github+json" \
-           -H "Authorization: Bearer ${{secrets.GITHUB_TOKEN}}" \
-           -H "X-GitHub-Api-Version: 2022-11-28" \
-           https://api.github.com/repos/${{github.repository}}/releases \
-          -d '{"tag_name":"${{inputs.release_version}}","name":"${{inputs.release_version}}","body":"${{env.RELEASE_MESSAGE}}","draft":false,"prerelease":false,"generate_release_notes":false}'
-
-
-  publish-artifacts:
-    name: Publishing Artifacts to Nexus & OSSRH
-    runs-on: self-hosted
-    needs:
-      - create_release
-    steps:
-      - name: Setup Maven Action
-        uses: s4u/setup-maven-action@v1.14.0
-        with:
-          checkout-fetch-depth: 0
-          java-version: 21
-          java-distribution: adopt
-          maven-version: 3.9.0
-
-      - name: Checkout Code Repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{inputs.release_version}}
-
-      - name: Maven Build
-        run: |
-          mvn clean install \
-            -s ${{env.MAVEN_SETTING}} \
-            --batch-mode \
-            -e \
-            -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
-            -PcodeQuality
-
-      - name: Deploy To Nexus
-        run: |
-          mvn deploy \
-                --batch-mode \
-                -e \
-                -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
-                -DskipTests \
-                -DskipITs \
-                -Dmaven.master.skip \
-                -Dmaven.test.skip \
-                -s ${{env.MAVEN_SETTING}} \
-                -DrepositoryId='maven-releases' \
-                -Dgpg.passphrase=${{secrets.SELF_HOSTED_GPG_PASSPHRASE}}
-
-
-      - name: Publish To OSSRH (Maven Central Staging)
-        run: |
-          mvn deploy \
-              --batch-mode \
-              -e \
-              -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
-              -DskipTests \
-              -DskipITs \
-              -Dmaven.master.skip \
-              -Dmaven.test.skip \
-              -s ${{env.MAVEN_SETTING}} \
-              -DrepositoryId='maven-releases' \
-              -DrepositoryIdOSSRH='true' \
-              -PstageOSSRH -Dgpg.passphrase=${{secrets.SELF_HOSTED_GPG_PASSPHRASE}}
+          git push origin main
