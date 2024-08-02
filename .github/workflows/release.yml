@@ -78,11 +78,9 @@ jobs:
 
       - name: Commit Release Version
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git commit -am "Set release version to ${{ env.RELEASE_VERSION }}"
           git tag ${{ env.RELEASE_VERSION }}
-          git push origin main --tags
+          git push origin master --tags
 
       - name: Build Release Version
         run: mvn clean package
@@ -115,4 +113,4 @@ jobs:
       - name: Commit New Development Version
         run: |
           git commit -am "Set new development version to ${{ env.NEW_DEV_VERSION }}"
-          git push origin main
+          git push origin master
