@@ -164,13 +164,13 @@ jobs:
           git commit -am "Set new development version to ${{ env.NEW_DEV_VERSION }}"
           git push origin master
 
-      - name: Create tag
-        run: |
-          git remote set-url origin https://git:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git
-          git config user.name "Cloud User"
-          git add .
-          git commit -m 'Release ${{release_version}}'
-          git tag -a ${{release_version}} -m '${{release_version}}' --force
+      #- name: Create tag
+        #run: |
+          #git remote set-url origin https://git:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git
+          #git config user.name "Cloud User"
+          #git add .
+          #git commit -m 'Release ${{release_version}}'
+          #git tag -a ${{release_version}} -m '${{release_version}}' --force
 
       - name: Set Dev Version
         run: |
