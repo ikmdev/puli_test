@@ -4,6 +4,9 @@ run-name: "Releasing ${{ github.event.repository.name }} #${{github.run_number}}
 
 # Trigger workflow manually
 on:
+  pull_request:
+    types:
+      - completed
   workflow_dispatch:
     inputs:
       release_message:
@@ -82,9 +85,11 @@ jobs:
         run: |
           echo "NEW_SUFFIX_NUMBER=$((CURRENT_SUFFIX_NUMBER + 1))" >> GITHUB_OUTPUT
           
-          # Form the new versions
-          RELEASE_VERSION="$VERSION_PREFIX"
-          NEW_DEV_VERSION="$VERSION_PREFIX-ikm-r$NEW_SUFFIX_NUMBER-SNAPSHOT"
+      - name: Form the new versions
+        id: new versions
+        run: |
+          echo "RELEASE_VERSION=$VERSION_PREFIX" >> GITHUB_OUTPUT
+          echo "NEW_DEV_VERSION=$VERSION_PREFIX-ikm-r$NEW_SUFFIX_NUMBER-SNAPSHOT" >> GITHUB_OUTPUT
           
       - name: Print Information
         run: |
