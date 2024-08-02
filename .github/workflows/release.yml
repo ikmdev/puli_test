@@ -12,6 +12,17 @@ on:
       release_message:
         type: string
         description: "(Optional) Enter Release Message"
+  workflow_call:
+    inputs:
+      new_dev_version:
+        type: string
+        required: true
+      release_version:
+        type: string
+        required: true
+      release_message:
+        type: string
+        required: false
 
 # Define environment parameters
 env:
@@ -75,9 +86,13 @@ jobs:
           echo "NEW_SUFFIX_NUMBER=$((CURRENT_SUFFIX_NUMBER + 1))" >> GITHUB_OUTPUT
           
       - name: Form the new versions
-        id: new versions
+        id: new release version
         run: |
           echo "RELEASE_VERSION=$VERSION_PREFIX" >> GITHUB_OUTPUT
+
+      - name: Form the new versions
+        id: new dev version
+        run: |
           echo "NEW_DEV_VERSION=$VERSION_PREFIX-ikm-r$NEW_SUFFIX_NUMBER-SNAPSHOT" >> GITHUB_OUTPUT
           
       - name: Print Information
