@@ -173,12 +173,12 @@ jobs:
           #git commit -m 'Release ${{release_version}}'
           #git tag -a ${{release_version}} -m '${{release_version}}' --force
 
-      #- name: Set Dev Version
-        #run: |
-          #mvn -B versions:set \
-          #-s ${{env.MAVEN_SETTING}} \
-          #-DnewVersion=${{new_dev_version}} \
-          #-DgenerateBackupPoms=false
+      - name: Set Dev Version
+        run: |
+          mvn -B versions:set \
+          -s ${{env.MAVEN_SETTING}} \
+          -DnewVersion=${{NEW_DEV_VERSION}} \
+          -DgenerateBackupPoms=false
 
       - name: Commit & Push
         run: |
