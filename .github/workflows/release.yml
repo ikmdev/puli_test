@@ -4,9 +4,10 @@ run-name: "Releasing ${{ github.event.repository.name }} #${{github.run_number}}
 
 # Trigger workflow manually
 on:
-  pull_request:
-    types:
-      - completed
+  push:
+#  pull_request:
+    #types:
+      #- completed
   workflow_dispatch:
     inputs:
       release_message:
@@ -182,7 +183,7 @@ jobs:
       - name: Commit & Push
         run: |
           git add .
-          git commit -m 'Set next dev version to ${{new_dev_version}}'
+          git commit -m 'Set next dev version to ${{NEW_DEV_VERSION}}'
           git push origin HEAD:master
           git push --tags origin
 
