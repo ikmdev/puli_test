@@ -83,6 +83,11 @@ jobs:
           });
           "
 
+      - name: Build Release Version
+        run: |
+          mvn tidy:pom
+          mvn clean package
+
       - name: Commit Release Version
         run: |
           git config --global user.name "ifeoluwanimie"
@@ -91,11 +96,6 @@ jobs:
           git commit -am "Set release version to ${{ env.RELEASE_VERSION }}"
           git tag ${{ env.RELEASE_VERSION }}
           git push -f origin master --tags
-
-      - name: Build Release Version
-        run: |
-          mvn tidy:pom
-          mvn clean package
 
       - name: Set New Development Version in pom.xml
         run: |
