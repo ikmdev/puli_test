@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>dev.ikm.puli</groupId>
   <artifactId>puli_test_parent</artifactId>
-  <version>0.3.0-ikm-r1</version>
+  <version>0.3.0-ikm-r2</version>
   <packaging>pom</packaging>
-
   <name>Proof Utility</name>
   <description>Proof Utility Parent</description>
   <url>https://www.ikm.dev</url>
@@ -22,12 +20,10 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-
   <modules>
     <module>puli</module>
     <module>owlapi-proof</module>
   </modules>
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>21</java.version>
@@ -37,7 +33,6 @@
     <junit4.version>4.13.2</junit4.version>
     <junit-jupiter-api.version>5.6.3</junit-jupiter-api.version>
   </properties>
-
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -84,7 +79,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <build>
     <pluginManagement>
       <plugins>
@@ -281,7 +275,6 @@
       </plugin>
     </plugins>
   </build>
-
   <reporting>
     <plugins>
       <plugin>
@@ -333,7 +326,6 @@
       </plugin>
     </plugins>
   </reporting>
-
   <profiles>
     <profile>
       <id>emptySourceJavadocOSSRH</id>
