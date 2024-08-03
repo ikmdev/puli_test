@@ -46,8 +46,8 @@ jobs:
           NEW_SUFFIX_NUMBER=$((CURRENT_SUFFIX_NUMBER + 1))
           
           # Form the new versions
-          RELEASE_VERSION="$VERSION_PREFIX"
-          NEW_DEV_VERSION="$VERSION_PREFIX-ikm-r$NEW_SUFFIX_NUMBER-SNAPSHOT"
+          RELEASE_VERSION="$CURRENT_VERSION"
+          NEW_DEV_VERSION="$VERSION_PREFIX-ikm-r$NEW_SUFFIX_NUMBER"
           
           # Output the new versions
           echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
@@ -80,6 +80,8 @@ jobs:
 
       - name: Commit Release Version
         run: |
+          git config --global user.name "ifeoluwanimie"
+          git config --global user.email "onibokun_ifeoluwani@yahoo.com"
           git commit -am "Set release version to ${{ env.RELEASE_VERSION }}"
           git tag ${{ env.RELEASE_VERSION }}
           git push origin master --tags
