@@ -86,7 +86,7 @@ jobs:
   #Setting versioning for build and tags
   set_build_and_tag_release_and_set_next_dev_version:
     name: Set, Build, Tag Release Version & Set Next Version
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     permissions:
       contents: write
 
