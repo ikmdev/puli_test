@@ -87,7 +87,9 @@ jobs:
           git push origin master --tags
 
       - name: Build Release Version
-        run: mvn clean package
+        run: |
+          mvn tidy:pom
+          mvn clean package
 
       - name: Set New Development Version in pom.xml
         run: |
