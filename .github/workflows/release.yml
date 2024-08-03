@@ -86,7 +86,7 @@ jobs:
   #Setting versioning for build and tags
   set_build_and_tag_release_and_set_next_dev_version:
     name: Set, Build, Tag Release Version & Set Next Version
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     permissions:
       contents: write
 
@@ -167,7 +167,7 @@ jobs:
 
   publish-artifacts:
     name: Publishing Artifacts to Nexus & OSSRH
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs:
       - create_release
     steps:
@@ -195,6 +195,7 @@ jobs:
 
       - name: Deploy To Nexus
         run: |
+          mvn tidy:pom \
           mvn deploy \
                 --batch-mode \
                 -e \
@@ -210,6 +211,7 @@ jobs:
 
       - name: Publish To OSSRH (Maven Central Staging)
         run: |
+          mvn tidy:pom \
           mvn deploy \
               --batch-mode \
               -e \
