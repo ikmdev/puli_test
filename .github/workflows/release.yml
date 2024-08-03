@@ -17,6 +17,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Verify Branch
+        if: env.BRANCH_NAME != env.TRUNK_BRANCH_NAME
+        run: |
+          echo "ERROR: Attempting to release from branch ${{env.BRANCH_NAME}}. Release from ${{env.TRUNK_BRANCH_NAME}} branch only"
+          exit 1
+
       - name: Checkout Repository
         uses: actions/checkout@v2
 
@@ -86,6 +92,10 @@ jobs:
   #Setting versioning for build and tags
   set_build_and_tag_release_and_set_next_dev_version:
     name: Set, Build, Tag Release Version & Set Next Version
+
+    needs:
+      - release
+
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -93,7 +103,6 @@ jobs:
     steps:
       - name: Build Release Version
         run: |
-          mvn tidy:pom
           mvn clean package
 
       - name: Commit Release Version
