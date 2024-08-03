@@ -82,6 +82,7 @@ jobs:
         run: |
           git config --global user.name "ifeoluwanimie"
           git config --global user.email "onibokun_ifeoluwani@yahoo.com"
+          git add .
           git commit -am "Set release version to ${{ env.RELEASE_VERSION }}"
           git tag ${{ env.RELEASE_VERSION }}
           git push origin master --tags
