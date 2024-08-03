@@ -5,7 +5,12 @@ run-name: "Releasing ${{ github.event.repository.name }} #${{github.run_number}}
 on:
   push:
 
-  workflow_dispatch:
+# Define environment parameters
+env:
+  BRANCH_NAME: ${{github.ref_name}}
+  TRUNK_BRANCH_NAME: master
+  RELEASE_MESSAGE: ${{github.event.inputs.release_message}}
+  MAVEN_SETTING: '/home/ec2-user/maven/.m2/settings.xml'
 
 jobs:
   release:
