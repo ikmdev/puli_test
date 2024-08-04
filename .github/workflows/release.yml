@@ -14,7 +14,7 @@ env:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Verify Branch
@@ -134,7 +134,7 @@ jobs:
   # Creating a release
   create_release:
     needs: release
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout code
@@ -158,7 +158,7 @@ jobs:
 
   publish-artifacts:
     name: Publishing Artifacts to Nexus & OSSRH
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs:
       - create_release
     steps:
