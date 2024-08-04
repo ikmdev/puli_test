@@ -94,7 +94,7 @@ jobs:
           git add .
           git commit -am "Set release version to ${{ env.RELEASE_VERSION }}"
           git tag ${{ env.RELEASE_VERSION }}
-          git push -f origin master --tags
+          git push origin master --tags
 
       - name: Build Release Version
         run: |
