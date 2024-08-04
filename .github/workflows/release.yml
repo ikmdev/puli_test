@@ -10,11 +10,11 @@ env:
   BRANCH_NAME: ${{github.ref_name}}
   TRUNK_BRANCH_NAME: master
   RELEASE_MESSAGE: ${{github.event.inputs.release_message}}
-  MAVEN_FILE: '/home/ec2-user/maven/.m2/settings.xml'
+  MAVEN_SETTINGS: '/home/ec2-user/maven/.m2/settings.xml'
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Verify Branch
@@ -91,12 +91,11 @@ jobs:
 
       - name: Commit Release Version
         run: |
-          git config --global user.name "ifeoluwanimie"
-          git config --global user.email "onibokun_ifeoluwani@yahoo.com"
-          git add .
-          git commit -am "Set release version to ${{ env.RELEASE_VERSION }}"
-          git tag ${{ env.RELEASE_VERSION }}
-          git push -f origin master --tags
+          sudo -u ec2-user bash -c \
+          'git add .;
+           git commit -am "Set release version to ${{ env.RELEASE_VERSION }}";
+           git tag ${{ env.RELEASE_VERSION }};
+           git push -f origin master --tags;'
 
       - name: Build Release Version
         run: |
@@ -104,6 +103,7 @@ jobs:
 
       - name: Set New Development Version in pom.xml
         run: |
+          sudo -u ec2-user bash -c \
           NEW_DEV_VERSION=${{ env.NEW_DEV_VERSION }}
           
           # Update the version in pom.xml to new development version
@@ -129,11 +129,10 @@ jobs:
 
       - name: Commit New Development Version
         run: |
-          git config --global user.name "ifeoluwanimie"
-          git config --global user.email "onibokun_ifeoluwani@yahoo.com"
-          git add .
-          git commit -am "Set new development version to ${{ env.NEW_DEV_VERSION }}"
-          git push origin master
+          gsudo -u ec2-user bash -c \
+          'git add .;
+           git commit -am "Set new development version to ${{ env.NEW_DEV_VERSION }}";
+           git push origin master;'
 
   # Creating a release
   create_release:
@@ -162,7 +161,7 @@ jobs:
 
   publish-artifacts:
     name: Publishing Artifacts to Nexus & OSSRH
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs:
       - create_release
     steps:
@@ -182,7 +181,7 @@ jobs:
       - name: Maven Build
         run: |
           mvn clean install \
-            -s ${{env.MAVEN_FILE}} \
+            -s ${{env.MAVEN_SETTINGS}} \
             --batch-mode \
             -e \
             -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
@@ -199,7 +198,7 @@ jobs:
                 -DskipITs \
                 -Dmaven.master.skip \
                 -Dmaven.test.skip \
-                -s ${{env.MAVEN_FILE}} \
+                -s ${{env.MAVEN_SETTINGS}} \
                 -DrepositoryId='maven-releases' \
                 -Dgpg.passphrase=${{secrets.SELF_HOSTED_GPG_PASSPHRASE}}
 
@@ -215,7 +214,7 @@ jobs:
               -DskipITs \
               -Dmaven.master.skip \
               -Dmaven.test.skip \
-              -s ${{env.MAVEN_FILE}} \
+              -s ${{env.MAVEN_SETTINGS}} \
               -DrepositoryId='maven-releases' \
               -DrepositoryIdOSSRH='true' \
               -PstageOSSRH -Dgpg.passphrase=${{secrets.SELF_HOSTED_GPG_PASSPHRASE}}
