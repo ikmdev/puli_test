@@ -91,11 +91,10 @@ jobs:
 
       - name: Commit Release Version
         run: |
-          sudo -u ec2-user bash -c \
-          'git add .;
-           git commit -am "Set release version to ${{ env.RELEASE_VERSION }}";
-           git tag ${{ env.RELEASE_VERSION }};
-           git push -f origin master --tags;'
+          git add .
+          git commit -am "Set release version to ${{ env.RELEASE_VERSION }}"
+          git tag ${{ env.RELEASE_VERSION }}
+          git push -f origin master --tags
 
       - name: Build Release Version
         run: |
@@ -103,7 +102,6 @@ jobs:
 
       - name: Set New Development Version in pom.xml
         run: |
-          sudo -u ec2-user bash -c \
           NEW_DEV_VERSION=${{ env.NEW_DEV_VERSION }}
           
           # Update the version in pom.xml to new development version
@@ -129,10 +127,9 @@ jobs:
 
       - name: Commit New Development Version
         run: |
-          gsudo -u ec2-user bash -c \
-          'git add .;
-           git commit -am "Set new development version to ${{ env.NEW_DEV_VERSION }}";
-           git push origin master;'
+          git add .
+          git commit -am "Set new development version to ${{ env.NEW_DEV_VERSION }}"
+          git push origin master
 
   # Creating a release
   create_release:
@@ -161,7 +158,7 @@ jobs:
 
   publish-artifacts:
     name: Publishing Artifacts to Nexus & OSSRH
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs:
       - create_release
     steps:
