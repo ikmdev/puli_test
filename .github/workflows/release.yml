@@ -57,7 +57,7 @@ jobs:
           NEW_SUFFIX_NUMBER=$((CURRENT_SUFFIX_NUMBER + 1))
           
           # Form the new versions
-          RELEASE_VERSION="$CURRENT_VERSION"
+          RELEASE_VERSION="$VERSION_PREFIX"
           NEW_DEV_VERSION="$VERSION_PREFIX-ikm-r$NEW_SUFFIX_NUMBER"
           
           # Output the new versions
@@ -89,22 +89,6 @@ jobs:
           });
           "
 
-  #Setting versioning for build and tags
-  set_build_and_tag_release_and_set_next_dev_version:
-    name: Set, Build, Tag Release Version & Set Next Version
-
-    needs:
-      - release
-
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - name: Build Release Version
-        run: |
-          mvn clean package
-
       - name: Commit Release Version
         run: |
           git config --global user.name "ifeoluwanimie"
@@ -113,6 +97,10 @@ jobs:
           git commit -am "Set release version to ${{ env.RELEASE_VERSION }}"
           git tag ${{ env.RELEASE_VERSION }}
           git push -f origin master --tags
+
+      - name: Build Release Version
+        run: |
+          mvn clean package
 
       - name: Set New Development Version in pom.xml
         run: |
@@ -141,17 +129,15 @@ jobs:
 
       - name: Commit New Development Version
         run: |
+          git config --global user.name "ifeoluwanimie"
+          git config --global user.email "onibokun_ifeoluwani@yahoo.com"
+          git add .
           git commit -am "Set new development version to ${{ env.NEW_DEV_VERSION }}"
           git push origin master
 
   # Creating a release
   create_release:
-    name: Create Release
-    permissions: write-all
-
-    needs:
-      - set_build_and_tag_release_and_set_next_dev_version
-
+    needs: release
     runs-on: ubuntu-latest
 
     steps:
