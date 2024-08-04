@@ -2,8 +2,13 @@ name: Release Workflow
 
 run-name: "Releasing ${{ github.event.repository.name }} #${{github.run_number}}"
 
+# Trigger workflow manually
 on:
-  push:
+  workflow_dispatch:
+    inputs:
+      release_message:
+        type: string
+        description: "(Optional) Enter Release Message"
 
 # Define environment parameters
 env:
@@ -89,16 +94,16 @@ jobs:
           });
           "
 
+      - name: Build Release Version
+        run: |
+          mvn clean package
+
       - name: Commit Release Version
         run: |
           git add .
           git commit -am "Set release version to ${{ env.RELEASE_VERSION }}"
           git tag ${{ env.RELEASE_VERSION }}
           git push origin master --tags
-
-      - name: Build Release Version
-        run: |
-          mvn clean package
 
       - name: Set New Development Version in pom.xml
         run: |
