@@ -167,14 +167,6 @@ jobs:
     needs:
       - create_release
     steps:
-      #- name: Setup Maven Action
-        #uses: s4u/setup-maven-action@v1.14.0
-        #with:
-          #checkout-fetch-depth: 0
-          #java-version: 21
-          #java-distribution: adopt
-          #maven-version: 3.9.0
-
       - name: Checkout Code Repository
         uses: actions/checkout@v4
         with:
@@ -197,8 +189,6 @@ jobs:
                 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
                 -DskipTests \
                 -DskipITs \
-                -Dmaven.master.skip \
-                -Dmaven.test.skip \
                 -s ${{env.MAVEN_SETTINGS}} \
                 -DrepositoryId='maven-releases' \
                 -Dgpg.passphrase=${{secrets.SELF_HOSTED_GPG_PASSPHRASE}}
@@ -212,8 +202,6 @@ jobs:
               -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
               -DskipTests \
               -DskipITs \
-              -Dmaven.master.skip \
-              -Dmaven.test.skip \
               -s ${{env.MAVEN_SETTINGS}} \
               -DrepositoryId='maven-releases' \
               -DrepositoryIdOSSRH='true' \
