@@ -181,17 +181,17 @@ jobs:
             -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
             -PcodeQuality
 
-#      - name: Settings.xml Config
-#        uses: s4u/maven-settings-action@v2.3.0
-#        with:
-#          servers: |
-#            [{
-#              "id": "${{vars.NEXUS_SNAPSHOT_REPO_ID}}",
-#              "username": "${{ vars.NEXUS_USERNAME }}",
-#              "password": "${{ secrets.NEXUS_PASSWORD}}"
-#            }]
-#
-#          output_file: .m2/settings.xml
+      - name: Settings.xml Config
+        uses: s4u/maven-settings-action@v2.3.0
+        with:
+          servers: |
+            [{
+              "id": "${{vars.NEXUS_SNAPSHOT_REPO_ID}}",
+              "username": "${{ vars.NEXUS_USERNAME }}",
+              "password": "${{ secrets.NEXUS_PASSWORD}}"
+            }]
+
+          output_file: /home/temp_code_folder/.m2/settings.xml
 
       - name: Deploy To Nexus
         run: |
@@ -201,8 +201,8 @@ jobs:
             -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
             -DskipTests \
             -DskipITs \
-            -s ${{env.MAVEN_SETTING}} \
-            -DaltDeploymentRepository=releaseRepository::default::https://${{ vars.NEXUS_USERNAME }}:${{ secrets.NEXUS_PASSWORD}}@nexus.build.tinkarbuild.com/repository/maven-releases/
+            -s /home/temp_code_folder/.m2/settings.xml \
+            -DaltDeploymentRepository=${{vars.NEXUS_SNAPSHOT_REPO_ID}}::https://nexus.build.tinkarbuild.com/repository/maven-releases/
             -DrepositoryId='maven-releases' \
             -Dgpg.passphrase=${{secrets.SELF_HOSTED_GPG_PASSPHRASE}}
 
