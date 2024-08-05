@@ -20,7 +20,7 @@ jobs:
       ARTIFACT_REPOSITORY_ID: "maven-snapshots"
       REPOSITORY_NAME: ${{github.repository}}
       BRANCH: "master"
-      MAVEN_FILE: '/home/ec2-user/maven/.m2/settings.xml'
+      MAVEN_SETTINGS: '/home/ec2-user/maven/.m2/settings.xml'
 
     steps:
       - name: Checkout Forked Code Repository
@@ -43,6 +43,6 @@ jobs:
              -PcodeQuality \
              -DskipTests \
              -DskipITs \
-             -s ${{env.MAVEN_FILE}} \
+             -s ${{env.MAVEN_SETTINGS}} \
              -DrepositoryId='${{env.ARTIFACT_REPOSITORY_ID}}' \
              -Dgpg.passphrase=${{secrets.GPG_PASSPHRASE}}             
