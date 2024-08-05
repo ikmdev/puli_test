@@ -44,5 +44,5 @@ jobs:
              -DskipTests \
              -DskipITs \
              -s ${{env.MAVEN_SETTINGS}} \
-             -DrepositoryId='${{env.ARTIFACT_REPOSITORY_ID}}' \
+             -DrepositoryId=${{env.ARTIFACT_REPOSITORY_ID}} \
              -Dgpg.passphrase=${{secrets.GPG_PASSPHRASE}}             
