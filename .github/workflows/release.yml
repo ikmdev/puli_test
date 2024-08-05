@@ -62,7 +62,7 @@ jobs:
           NEW_SUFFIX_NUMBER=$((CURRENT_SUFFIX_NUMBER + 1))
           
           # Form the new versions
-          RELEASE_VERSION="$VERSION_PREFIX"
+          RELEASE_VERSION="$CURRENT_VERSION"
           NEW_DEV_VERSION="$VERSION_PREFIX-ikm-r$NEW_SUFFIX_NUMBER"
           
           # Output the new versions
