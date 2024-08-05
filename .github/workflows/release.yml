@@ -98,12 +98,12 @@ jobs:
         run: |
           mvn clean package
 
-      - name: Commit Release Version
-        run: |
-          git add .
-          git commit -am "Set release version to ${{ env.RELEASE_VERSION }}"
-          git tag ${{ env.RELEASE_VERSION }}
-          git push origin master --tags
+      #- name: Commit Release Version
+        #run: |
+         # git add .
+         # git commit -am "Set release version to ${{ env.RELEASE_VERSION }}"
+         # git tag ${{ env.RELEASE_VERSION }}
+         # git push origin master --tags
 
       - name: Set New Development Version in pom.xml
         run: |
