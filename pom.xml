@@ -13,9 +13,6 @@
     <name>Integrated Knowledge Management</name>
     <url>https://www.ikm.dev</url>
   </organization>
-  <scm>
-    <url>http://www.github.com/ikmdev/puli_test</>
-  </scm>
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
