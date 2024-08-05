@@ -181,17 +181,45 @@ jobs:
             -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
             -PcodeQuality
 
-      - name: Settings.xml Config
-        uses: s4u/maven-settings-action@v2.3.0
+      - name: Maven Settings File
+        uses: whelk-io/maven-settings-xml-action@v22
         with:
-          servers: |
+          servers: >
+            [
+              {
+                "id": "nexus"
+              },
+              {
+                "id": "${{vars.NEXUS_SNAPSHOT_REPO_ID}}",
+                "username": "${{ vars.NEXUS_USERNAME }}",
+                "password": "${{ secrets.NEXUS_PASSWORD }}"
+              },
+              {
+                "id": "${{vars.NEXUS_MIRROR_ID}}",
+                "username": "${{ vars.NEXUS_USERNAME }}",
+                "password": "${{ secrets.NEXUS_PASSWORD }}"
+              }
+            ]
+          profiles: >  
             [{
-              "id": "${{vars.NEXUS_SNAPSHOT_REPO_ID}}",
-              "username": "${{ vars.NEXUS_USERNAME }}",
-              "password": "${{ secrets.NEXUS_PASSWORD}}"
+                 "id": "inject-application-properties",
+                 "properties": { 
+                     "altSnapshotDeploymentRepository": "${{vars.NEXUS_SNAPSHOT_REPO_ID}}::https://nexus.build.tinkarbuild.com/repository/maven-snapshots/",  
+                     "altReleaseDeploymentRepository": "${{vars.NEXUS_RELEASE_REPO_ID}}::https://nexus.build.tinkarbuild.com/repository/maven-releases/" 
+                 }
             }]
-
-          output_file: /home/temp_code_folder/.m2/settings.xml
+          active_profiles: > 
+            [
+               "inject-application-properties"
+            ]
+          mirrors: >  
+            [{  
+                "id": "${{vars.NEXUS_MIRROR_ID}}", 
+                "name": "${{vars.NEXUS_MIRROR_ID}}",  
+                "url": "https://nexus.build.tinkarbuild.com/repository/maven-public",
+                "mirrorOf": "*" 
+            }]
+          output_file: .m2/settings.xml
 
       - name: Deploy To Nexus
         run: |
@@ -201,8 +229,7 @@ jobs:
             -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
             -DskipTests \
             -DskipITs \
-            -s /home/temp_code_folder/.m2/settings.xml \
-            -DaltDeploymentRepository=${{vars.NEXUS_SNAPSHOT_REPO_ID}}::https://nexus.build.tinkarbuild.com/repository/maven-releases/
+            -s '/home/ec2-user/actions-runner/_work/${{github.event.repository.name}}/${{github.event.repository.name}}/.m2/settings.xml' \
             -DrepositoryId='maven-releases' \
             -Dgpg.passphrase=${{secrets.SELF_HOSTED_GPG_PASSPHRASE}}
 
