@@ -1,0 +1,85 @@
+name: Release Workflow
+
+run-name: "Releasing ${{ github.event.repository.name }} #${{github.run_number}}"
+
+# Trigger workflow manually
+on:
+  workflow_dispatch:
+    inputs:
+      release_message:
+        type: string
+        description: "(Optional) Enter Release Message"
+
+# Define environment parameters
+env:
+  BRANCH_NAME: ${{github.ref_name}}
+  TRUNK_BRANCH_NAME: master
+  RELEASE_MESSAGE: ${{github.event.inputs.release_message}}
+  MAVEN_FILE: '/home/ec2-user/maven/.m2/settings.xml'
+
+jobs:
+  release:
+    runs-on: self-hosted
+    outputs:
+      NEXT_SNAPSHOT_VERSION: ${{env.NEW_DEV_VERSION}}
+      RELEASE_VERSION: ${{env.RELEASE_VERSION}}
+    steps:
+      - name: Verify Branch
+        if: env.BRANCH_NAME != env.TRUNK_BRANCH_NAME
+        run: |
+          echo "ERROR: Attempting to release from branch ${{env.BRANCH_NAME}}. Release from ${{env.TRUNK_BRANCH_NAME}} branch only"
+          exit 1
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{secrets.IKMDEVOPS_PAT_TOKEN}}
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+
+      - name: Set up Node.js (for XML parsing)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+
+      - name: Install XML2JS
+        run: npm install xml2js
+
+      - name: Extract and Increment Version
+        id: increment_version
+        run: |
+          # Extract the current version from pom.xml
+          CURRENT_VERSION=$(grep -oPm1 "(?<=<version>)[^<]+" pom.xml)
+          
+          # Split the version into parts
+          VERSION_PREFIX=$(echo $CURRENT_VERSION | grep -oE '^[0-9]+\.[0-9]+\.[0-9]+')
+          VERSION_SUFFIX=$(echo $CURRENT_VERSION | grep -oE '[a-zA-Z0-9\-]+$')
+          
+          # Extract the current numeric suffix
+          CURRENT_SUFFIX_NUMBER=$(echo $VERSION_SUFFIX | grep -oE '[0-9]+$')
+          
+          # Increment the suffix number for new development version
+          NEW_SUFFIX_NUMBER=$((CURRENT_SUFFIX_NUMBER + 1))
+          
+          # Form the new versions
+          RELEASE_VERSION="$CURRENT_VERSION"
+          NEW_DEV_VERSION="$VERSION_PREFIX-ikm-r$NEW_SUFFIX_NUMBER"
+          
+          # Output the new versions
+          echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+          echo "NEW_DEV_VERSION=$NEW_DEV_VERSION" >> $GITHUB_ENV
+
+  call_release_workflow_with_custom_inputs:
+    name: Call Reusable Workflow With Inputs
+    needs: release
+    uses: ikmdev/github_actions_test/.github/workflows/reusable_release_workflow.yaml@main
+    permissions: write-all
+    secrets: inherit
+    with:
+              snapshot_version: ${{needs.release.outputs.NEXT_SNAPSHOT_VERSION}}
+              release_version: ${{needs.release.outputs.RELEASE_VERSION}}
+              release_message: ${{github.event.inputs.release_message}}  
