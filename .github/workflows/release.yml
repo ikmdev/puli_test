@@ -29,7 +29,9 @@ jobs:
           exit 1
 
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          token: ${{secrets.IKMDEVOPS_PAT_TOKEN}}
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -98,12 +100,15 @@ jobs:
         run: |
           mvn clean package
 
-      #- name: Commit Release Version
-        #run: |
-         # git add .
-         # git commit -am "Set release version to ${{ env.RELEASE_VERSION }}"
-         # git tag ${{ env.RELEASE_VERSION }}
-         # git push origin master --tags
+      - name: Create tag
+        run: |
+           git remote set-url origin https://git:${{secrets.IKMDEVOPS_PAT_TOKEN}}@github.com/${{github.repository}}.git
+           git pull -p
+           git add .
+           git config user.name "ikmdevops"
+           git config user.email ${{vars.IKMDEVOPS_EMAIL}}
+           git commit -m 'Release ${{inputs.release_version}}'
+           git tag -a ${{inputs.release_version}} -m '${{inputs.release_version}}' --force
 
       - name: Set New Development Version in pom.xml
         run: |
@@ -134,7 +139,9 @@ jobs:
         run: |
           git add .
           git commit -am "Set new development version to ${{ env.NEW_DEV_VERSION }}"
-          git push origin master
+          git push origin HEAD:main
+          git push --tags origin
+          
 
   # Creating a release
   create_release:
@@ -147,7 +154,7 @@ jobs:
 
       - name: Modify Release Message
         if: inputs.release_message == ''
-        run: echo "RELEASE_MESSAGE=Release ${{env.new_dev_version}}" >> $GITHUB_ENV
+        run: echo "RELEASE_MESSAGE=Release ${{env.release_version}}" >> $GITHUB_ENV
 
       - name: Create Release
         id: create_release
@@ -158,7 +165,7 @@ jobs:
            -H "Authorization: Bearer ${{secrets.GITHUB_TOKEN}}" \
            -H "X-GitHub-Api-Version: 2022-11-28" \
            https://api.github.com/repos/${{github.repository}}/releases \
-          -d '{"tag_name":"${{env.new_dev_version}}","name":"${{env.new_dev_version}}","body":"${{env.RELEASE_MESSAGE}}","draft":false,"prerelease":false,"generate_release_notes":false}'
+          -d '{"tag_name":"${{env.release_version}}","name":"${{env.release_version}}","body":"${{env.RELEASE_MESSAGE}}","draft":false,"prerelease":false,"generate_release_notes":false}'
 
 
   publish-artifacts:
@@ -170,7 +177,7 @@ jobs:
       - name: Checkout Code Repository
         uses: actions/checkout@v4
         with:
-          ref: ${{env.new_dev_version}}
+          ref: ${{env.release_version}}
 
       - name: Maven Build
         run: |
