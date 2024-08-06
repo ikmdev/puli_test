@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>dev.ikm.puli</groupId>
   <artifactId>puli_test_parent</artifactId>
-  <version>0.3.0-ikm-r12</version>
+  <version>0.3.0-ikm-r6</version>
   <packaging>pom</packaging>
   <name>Proof Utility</name>
   <description>Proof Utility Parent</description>
@@ -329,13 +329,13 @@
       <distributionManagement>
         <snapshotRepository>
           <id>ossrh</id>
+          <layout>maven</layout>
           <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-          <name>maven</name>
         </snapshotRepository>
         <repository>
           <id>maven-releases</id>
+          <layout>maven</layout>
           <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-          <name>maven</name>
         </repository>
       </distributionManagement>
       <build>
@@ -370,13 +370,13 @@
       <distributionManagement>
         <snapshotRepository>
           <id>ossrh</id>
+          <layout>maven</layout>
           <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-          <name>maven</name>
         </snapshotRepository>
         <repository>
           <id>maven-releases</id>
+          <layout>maven</layout>
           <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-          <name>maven</name>
         </repository>
       </distributionManagement>
       <build>
@@ -426,13 +426,13 @@
       <distributionManagement>
         <snapshotRepository>
           <id>ossrh</id>
+          <layout>maven</layout>
           <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-          <name>maven</name>
         </snapshotRepository>
         <repository>
           <id>maven-releases</id>
+          <layout>maven</layout>
           <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-          <name>maven</name>
         </repository>
       </distributionManagement>
       <build>

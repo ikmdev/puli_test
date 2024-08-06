@@ -236,7 +236,7 @@ jobs:
 
       - name: Publish To OSSRH (Maven Central Staging)
         run: |
-          mvn -X deploy \
+          mvn deploy \
             --batch-mode \
             -e \
             -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
