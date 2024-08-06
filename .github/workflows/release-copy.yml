@@ -76,7 +76,7 @@ jobs:
   call_release_workflow_with_custom_inputs:
     name: Call Reusable Workflow With Inputs
     needs: release
-    uses: ikmdev/github_actions_test/.github/workflows/reusable_release_workflow.yaml@main
+    uses: ikmdev/github_actions_test/.github/workflows/reusable_release_wf.yaml@main
     permissions: write-all
     secrets: inherit
     with:
