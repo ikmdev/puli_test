@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>dev.ikm.puli</groupId>
 		<artifactId>puli_test_parent</artifactId>
-		<version>0.3.0-ikm-r4</version>
+		<version>0.3.0-ikm-r0</version>
 	</parent>
 
 	<artifactId>owlapi_proof_test</artifactId>
