@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>dev.ikm.puli</groupId>
   <artifactId>puli_test_parent</artifactId>
-  <version>0.3.0-ikm-r7</version>
+  <version>0.3.0-ikm-r8</version>
   <packaging>pom</packaging>
   <name>Proof Utility</name>
   <description>Proof Utility Parent</description>
