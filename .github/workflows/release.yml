@@ -221,17 +221,17 @@ jobs:
             }]
           output_file: .m2/settings.xml
 
-      - name: Deploy To Nexus
-        run: |
-          mvn -X deploy \
-            --batch-mode \
-            -e \
-            -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
-            -DskipTests \
-            -DskipITs \
-            -s '/home/ec2-user/actions-runner/_work/${{github.event.repository.name}}/${{github.event.repository.name}}/.m2/settings.xml' \
-            -DrepositoryId='maven-releases' \
-            -Dgpg.passphrase=${{secrets.SELF_HOSTED_GPG_PASSPHRASE}}
+#      - name: Deploy To Nexus
+#        run: |
+#          mvn -X deploy \
+#            --batch-mode \
+#            -e \
+#            -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
+#            -DskipTests \
+#            -DskipITs \
+#            -s '/home/ec2-user/actions-runner/_work/${{github.event.repository.name}}/${{github.event.repository.name}}/.m2/settings.xml' \
+#            -DrepositoryId='maven-releases' \
+#            -Dgpg.passphrase=${{secrets.SELF_HOSTED_GPG_PASSPHRASE}}
 
 
       - name: Publish To OSSRH (Maven Central Staging)
