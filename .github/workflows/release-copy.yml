@@ -19,6 +19,7 @@ env:
 
 jobs:
   release:
+    name: Increment Release Version
     runs-on: ubuntu-latest
     outputs:
       NEXT_IKM_RELEASE_VERSION: ${{env.NEW_DEV_VERSION}}
