@@ -24,18 +24,23 @@
 	</licenses>
 
 	<dependencies>
-		<dependency>
+		<!--<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
-		</dependency>
+		</dependency>-->
 		<!-- dev.ikm OWL API dependencies-->
 		<dependency>
 			<groupId>dev.ikm.owlapi</groupId>
 			<artifactId>owlapi-api</artifactId>
+		</dependency>
+		<!-- dev.ikm JPMS dependencies-->
+		<dependency>
+			<groupId>dev.ikm.jpms</groupId>
+			<artifactId>jsr305</artifactId>
 		</dependency>
 		<!-- Project dependencies-->
 		<dependency>
@@ -44,9 +49,9 @@
 			<version>${project.version}</version>
 		</dependency>
 		<!-- Test dependencies-->
-		<dependency>
+		<!--<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>
+		</dependency>-->
 	</dependencies>
 </project>
