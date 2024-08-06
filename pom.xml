@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>dev.ikm.puli</groupId>
   <artifactId>puli_test_parent</artifactId>
-  <version>0.3.0-ikm-r4</version>
+  <version>0.3.0-ikm-r0</version>
   <packaging>pom</packaging>
   <name>Proof Utility</name>
   <description>Proof Utility Parent</description>
@@ -109,11 +109,11 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.11.0</version>
         </plugin>
-        <!-- <plugin>
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.8.2</version>
-        </plugin> -->
+          <version>3.1.2</version>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
