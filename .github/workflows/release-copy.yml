@@ -1,4 +1,4 @@
-name: Release Workflow
+name: Puli Release Workflow
 
 run-name: "Releasing ${{ github.event.repository.name }} #${{github.run_number}}"
 
@@ -89,19 +89,6 @@ jobs:
         with:
           token: ${{secrets.IKMDEVOPS_PAT_TOKEN}}
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'adopt'
-          java-version: '21'
-
-      - name: Set Release Version
-        run: |
-          mvn -B versions:set \
-          -s ${{env.MAVEN_SETTING}} \
-          -DnewVersion=${{needs.release.outputs.RELEASE_VERSION}} \
-          -DgenerateBackupPoms=false
-
       - name: Build Release Version
         run: |
            mvn -version
@@ -112,16 +99,6 @@ jobs:
                 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
                 -PcodeQuality,release-enforcement
 
-      - name: Create tag
-        run: |
-              git remote set-url origin https://git:${{secrets.IKMDEVOPS_PAT_TOKEN}}@github.com/${{github.repository}}.git
-              git pull -p
-              git add .
-              git config user.name "ikmdevops"
-              git config user.email ${{vars.IKMDEVOPS_EMAIL}}
-              git commit -m 'Release ${{needs.release.outputs.RELEASE_VERSION}}'
-              git tag -a ${{needs.release.outputs.RELEASE_VERSION}} -m '${{needs.release.outputs.RELEASE_VERSION}}' --force
-
 
       - name: Set IKM Release Version
         run: |
@@ -129,13 +106,18 @@ jobs:
           -DnewVersion=${{needs.release.outputs.NEXT_IKM_RELEASE_VERSION}} \
           -DgenerateBackupPoms=false
 
-
-      - name: Commit & Push
+      - name: Create tag, Commit & Push
         run: |
-           git add .
-           git commit -m 'Set next dev version to ${{needs.release.outputs.NEXT_IKM_RELEASE_VERSION}}'
-           git push origin HEAD:${{env.TRUNK_BRANCH_NAME}}
-           git push --tags origin
+              git remote set-url origin https://git:${{secrets.IKMDEVOPS_PAT_TOKEN}}@github.com/${{github.repository}}.git
+              git pull -p
+              git add .
+              git config user.name "ikmdevops"
+              git config user.email ${{vars.IKMDEVOPS_EMAIL}}
+              git commit -m 'Set next ikm release version to ${{needs.release.outputs.NEXT_IKM_RELEASE_VERSION}}'
+              git tag -a ${{needs.release.outputs.RELEASE_VERSION}} -m '${{needs.release.outputs.RELEASE_VERSION}}' --force
+              git push origin HEAD:${{env.TRUNK_BRANCH_NAME}}
+              git push --tags origin
+
 
   # Creating a release
   create_release:
