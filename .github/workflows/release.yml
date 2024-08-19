@@ -23,7 +23,7 @@ jobs:
           exit 1
 
       - name: Release IKMDEV Code
-        uses: ./.github/workflows/reuse.yaml/composite-action
+        uses: ikmdev/maven-unique-release-action@master
         with:
           ikmdevops_pat: ${{secrets.IKMDEVOPS_PAT_TOKEN}}
           github_token: ${{secrets.GITHUB_TOKEN}}
