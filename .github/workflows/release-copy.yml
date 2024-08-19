@@ -40,7 +40,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '21'
-          distribution: 'adopt'
+          distribution: 'zulu'
 
       - name: Set up Node.js (for XML parsing)
         uses: actions/setup-node@v4
@@ -92,13 +92,13 @@ jobs:
 
       - name: Build Release Version
         run: |
-           mvn -version
-           mvn clean install \
-                -s ${{env.MAVEN_SETTING}} \
-                --batch-mode \
-                -e \
-                -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
-                -PcodeQuality,release-enforcement
+          mvn -version
+          mvn clean install \
+               -s ${{env.MAVEN_SETTING}} \
+               --batch-mode \
+               -e \
+               -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
+               -PcodeQuality,release-enforcement
 
       - name: Create Tag
         run: |
@@ -116,10 +116,10 @@ jobs:
 
       - name: Commit & Push
         run: |
-              git add .
-              git commit -m 'Set next ikm release version to ${{needs.release.outputs.NEXT_IKM_RELEASE_VERSION}}'
-              git push origin HEAD:${{env.TRUNK_BRANCH_NAME}}
-              git push --tags origin
+          git add .
+          git commit -m 'Set next ikm release version to ${{needs.release.outputs.NEXT_IKM_RELEASE_VERSION}}'
+          git push origin HEAD:${{env.TRUNK_BRANCH_NAME}}
+          git push --tags origin
 
 
   # Creating a release
@@ -157,45 +157,46 @@ jobs:
     name: Publishing Artifacts to Nexus & OSSRH
     runs-on: self-hosted
     needs:
-        - create_release
+      - create_release
     steps:
-          - name: Checkout Code Repository
-            uses: actions/checkout@v4
-            with:
-                ref: ${{needs.create_release.outputs.RELEASE_VERSION}}
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{needs.create_release.outputs.RELEASE_VERSION}}
 
-          - name: Maven Build
-            run: |
-              mvn clean install \
-                -s ${{env.MAVEN_SETTING}} \
+      - name: Maven Build
+        run: |
+          mvn clean install \
+            -s ${{env.MAVEN_SETTING}} \
+            --batch-mode \
+            -e \
+            -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
+            -PcodeQuality
+
+      - name: Deploy To Nexus
+        run: |
+          mvn deploy \
                 --batch-mode \
                 -e \
                 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
-                -PcodeQuality
+                -DskipTests \
+                -DskipITs \
+                -PcodeQuality \
+                -s ${{env.MAVEN_SETTING}} \
+                -DrepositoryId='maven-releases' \
+                -Dgpg.passphrase=${{secrets.SELF_HOSTED_GPG_PASSPHRASE}}
 
-          - name: Deploy To Nexus
-            run: |
-              mvn deploy \
-                    --batch-mode \
-                    -e \
-                    -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
-                    -DskipTests \
-                    -DskipITs \
-                    -s ${{env.MAVEN_SETTING}} \
-                    -DrepositoryId='maven-releases' \
-                    -Dgpg.passphrase=${{secrets.SELF_HOSTED_GPG_PASSPHRASE}}
-      
-      
-          - name: Publish To OSSRH (Maven Central Staging)
-            run: |
-                mvn deploy \
-                    --batch-mode \
-                    -e \
-                    -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
-                    -DskipTests \
-                    -DskipITs \
-                    -s ${{env.MAVEN_SETTING}} \
-                    -DrepositoryId='maven-releases' \
-                    -DrepositoryIdOSSRH='true' \
-                    -PstageOSSRH -Dgpg.passphrase=${{secrets.SELF_HOSTED_GPG_PASSPHRASE}}
-  
+
+      - name: Publish To OSSRH (Maven Central Staging)
+        run: |
+          mvn deploy \
+              --batch-mode \
+              -e \
+              -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
+              -DskipTests \
+              -DskipITs \
+              -PcodeQuality \
+              -s ${{env.MAVEN_SETTING}} \
+              -DrepositoryId='maven-releases' \
+              -DrepositoryIdOSSRH='true' \
+              -PstageOSSRH -Dgpg.passphrase=${{secrets.SELF_HOSTED_GPG_PASSPHRASE}}
