@@ -20,7 +20,7 @@ jobs:
       ARTIFACT_REPOSITORY_ID: "maven-snapshots"
       REPOSITORY_NAME: ${{github.repository}}
       BRANCH: "master"
-      MAVEN_FILE: '/home/ec2-user/maven/.m2/settings.xml'
+      MAVEN_SETTING: '/home/ec2-user/maven/.m2/settings.xml'
 
     steps:
       - name: Checkout Forked Code Repository
@@ -42,6 +42,6 @@ jobs:
            -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
            -PcodeQuality \
            -DskipTests \
-           -s ${{env.MAVEN_FILE}} \
+           -s ${{env.MAVEN_SETTING}} \
            -DrepositoryId='${{env.ARTIFACT_REPOSITORY_ID}}' \
-           -Dgpg.passphrase=${{secrets.GPG_PASSPHRASE}}             
+           -Dgpg.passphrase=${{secrets.GPG_PASSPHRASE}}
